@@ -1,5 +1,5 @@
 import { Layout, Tree, ConfigProvider, theme, Avatar, Divider, Row, Col, Button, Input, Tooltip, Typography, Space } from 'antd'
-import { UserOutlined, DoubleRightOutlined, DoubleLeftOutlined, DeleteFilled, PlusOutlined, FolderFilled } from '@ant-design/icons'
+import {  DoubleRightOutlined, DoubleLeftOutlined, DeleteFilled, PlusOutlined, FolderFilled } from '@ant-design/icons'
 import { Spin } from 'antd'
 
 import { useContext, useState } from 'react'
