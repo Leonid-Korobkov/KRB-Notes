@@ -22,7 +22,6 @@ function Auth() {
     })
   }, [])
 
-  console.log('he')
 
   return (
     <AuthContext.Provider value={{ app, auth, user, isLoading }}>

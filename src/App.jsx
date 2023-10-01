@@ -1,78 +1,29 @@
-import { Layout, Tree, ConfigProvider, theme, Avatar, Divider, Row, Col, Button, Input, Tooltip, Typography } from 'antd'
-import {  DoubleRightOutlined, DoubleLeftOutlined, DeleteFilled, PlusOutlined, FolderFilled } from '@ant-design/icons'
-import { Spin } from 'antd'
+import { Layout, Tree, ConfigProvider, theme, Divider, Row, Col, Button, Input, Tooltip, Typography, Dropdown } from 'antd'
+import {
+  DoubleRightOutlined,
+  DoubleLeftOutlined,
+  DeleteFilled,
+  PlusOutlined,
+  FolderFilled,
+  DownOutlined,
+  MoreOutlined,
+  EditFilled
+} from '@ant-design/icons'
 
 import { useContext, useState } from 'react'
 import NoteList from './components/NoteList'
 
 import { AuthContext } from './context/AuthContext'
 import Login from './components/Login'
+import Loader from './components/Loader/Loader'
 
 const { DirectoryTree } = Tree
 const { Sider, Content } = Layout
 const { Search } = Input
 const { Text } = Typography
 
-const treeData = [
-  {
-    title: 'Заметки',
-    key: '0-0',
-    children: [
-      {
-        title: 'leaf 0-0',
-        key: '0-0-0'
-      },
-      {
-        title: 'leaf 0-1',
-        key: '0-0-1',
-        isLeaf: true
-      }
-    ]
-  },
-  {
-    title: 'parent 1',
-    key: '0-1',
-    children: [
-      {
-        title: 'leaf 1-0',
-        key: '0-1-0',
-        isLeaf: true
-      },
-      {
-        title: 'leaf 1-1',
-        key: '0-1-1',
-        isLeaf: true
-      }
-    ]
-  }
-]
-
-const onSearch = (value, _e, info) => console.log(info?.source, value)
-
-const notes = [
-  {
-    id: 1,
-    title: 'Заметка 1. Это содержание заметки 1.',
-    content: 'Это содержание заметки 1. Здесь может быть много текста, и мы будем отображать первые 20 символов.',
-    lastDateEdited: Date.now() - 3600000 // Последнее редактирование было час назад
-  },
-  {
-    id: 2,
-    title: 'Заметка 2',
-    content: 'Это содержание заметки 2. Еще больше текста для примера.',
-    lastDateEdited: Date.now() - 7200000 // Последнее редактирование было 2 часа назад
-  },
-  {
-    id: 3,
-    title: 'Заметка 3',
-    content: 'Это содержание заметки 3. Еще больше текста для примера.',
-    lastDateEdited: Date.now() - 7200000 // Последнее редактирование было 2 часа назад
-  }
-  // Добавьте больше заметок по аналогии
-]
-
 const App = () => {
-  let { user, isLoading } = useContext(AuthContext)
+  let { isLoading } = useContext(AuthContext)
   const [collapsed, setCollapsed] = useState(false)
 
   const onSelect = (keys, info) => {
@@ -82,12 +33,8 @@ const App = () => {
     console.log('Trigger Expand', keys, info)
   }
 
-  if (isLoading)
-    return (
-      <Spin tip="Загрузка" size="large">
-        <div className="content" />
-      </Spin>
-    )
+  if (isLoading) return <Loader />
+
   return (
     <ConfigProvider
       theme={{
@@ -98,18 +45,7 @@ const App = () => {
         <Sider style={{ overflow: 'auto' }} theme="light" width={200} trigger={null} collapsible collapsed={collapsed} collapsedWidth={0}>
           <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div style={{ flexGrow: 1 }}>
-              {user ? (
-                <Row align="middle" style={{ marginTop: 10, padding: '5px 10px' }}>
-                  <Col span={6}>
-                    <Avatar src={user.photoURL}/>
-                  </Col>
-                  <Col span={18}>
-                    <Text type="secondary">Леонид Коробков</Text>
-                  </Col>
-                </Row>
-              ) : (
-                <Login />
-              )}
+              <Login />
 
               <Divider style={{ margin: '10px 0' }} />
 
@@ -124,7 +60,14 @@ const App = () => {
                       Папки
                     </Text>
                   </Row>
-                  <DirectoryTree multiple onSelect={onSelect} onExpand={onExpand} treeData={treeData} />
+                  <DirectoryTree
+                    showLine
+                    switcherIcon={<DownOutlined />}
+                    onSelect={onSelect}
+                    onExpand={onExpand}
+                    treeData={treeData}
+                    // onRightClick={}
+                  />
                 </Col>
               </Row>
             </div>
@@ -257,5 +200,121 @@ const App = () => {
     </ConfigProvider>
   )
 }
+
+const FolderActionsMenu = () => {
+  const handleMenuClick = (e) => {
+    console.log('Clicked on menu item:', e.key)
+  }
+
+  return (
+    <Dropdown
+      menu={{
+        items,
+        onClick: handleMenuClick
+      }}
+      trigger={['click']}
+    >
+      <MoreOutlined />
+    </Dropdown>
+  )
+}
+
+// eslint-disable-next-line react/prop-types
+const CustomTreeNode = ({ title, children }) => {
+  return (
+    <span style={{}}>
+      <Text style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', width: '100%' }}>{title}</Text>
+      {children}
+    </span>
+  )
+}
+
+const treeData = [
+  {
+    title: (
+      <CustomTreeNode title="Заметки ">
+        <FolderActionsMenu style={{}} />
+      </CustomTreeNode>
+    ),
+    key: '0-0',
+    children: [
+      {
+        title: (
+          <CustomTreeNode title="Важное">
+            <FolderActionsMenu />
+          </CustomTreeNode>
+        ),
+        key: '0-0-0'
+      },
+      {
+        title: 'leaf 0-1',
+        key: '0-0-1',
+        isLeaf: true
+      }
+    ]
+  },
+  {
+    title: 'parent 1',
+    key: '0-1',
+    children: [
+      {
+        title: 'leaf 1-0',
+        key: '0-1-0',
+        isLeaf: true
+      },
+      {
+        title: 'leaf 1-1',
+        key: '0-1-1',
+        isLeaf: true
+      }
+    ]
+  }
+]
+
+const items = [
+  {
+    key: 'pin',
+    label: <Text>Переименовать</Text>,
+    icon: <EditFilled />
+  },
+  {
+    key: 'move',
+    label: <Text>Переместить</Text>,
+    icon: <FolderFilled />
+  },
+  {
+    type: 'divider'
+  },
+  {
+    key: 'delete',
+    label: <Text>Удалить</Text>,
+    danger: true,
+    icon: <DeleteFilled />
+  }
+]
+
+const onSearch = (value, _e, info) => console.log(info?.source, value)
+
+const notes = [
+  {
+    id: 1,
+    title: 'Заметка 1. Это содержание заметки 1.',
+    content: 'Это содержание заметки 1. Здесь может быть много текста, и мы будем отображать первые 20 символов.',
+    lastDateEdited: Date.now() - 3600000 // Последнее редактирование было час назад
+  },
+  {
+    id: 2,
+    title: 'Заметка 2',
+    content: 'Это содержание заметки 2. Еще больше текста для примера.',
+    lastDateEdited: Date.now() - 7200000 // Последнее редактирование было 2 часа назад
+  },
+  {
+    id: 3,
+    title: 'Заметка 3',
+    content: 'Это содержание заметки 3. Еще больше текста для примера.',
+    lastDateEdited: Date.now() - 7200000 // Последнее редактирование было 2 часа назад
+  }
+  // Добавьте больше заметок по аналогии
+]
 
 export default App

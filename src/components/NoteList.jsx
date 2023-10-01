@@ -4,15 +4,15 @@ import { PushpinFilled, MoreOutlined, DeleteFilled, FolderFilled } from '@ant-de
 
 const { Text, Paragraph, Title } = Typography
 
-const itemsActionsDropMenu = [
+const items = [
   {
     key: 'pin',
-    label: <Text>Закрепить</Text>,
+    label: (<Text>Закрепить</Text>),
     icon: <PushpinFilled />
   },
   {
     key: 'move',
-    label: <Text>Переместить</Text>,
+    label: (<Text>Переместить</Text>),
     icon: <FolderFilled />
   },
   {
@@ -20,14 +20,15 @@ const itemsActionsDropMenu = [
   },
   {
     key: 'delete',
-    label: <Text>Удалить</Text>,
+    label: (<Text>Удалить</Text>),
     danger: true,
     icon: <DeleteFilled />
   }
 ]
 
-// eslint-disable-next-line react/prop-types
 // { notes, onNoteClick, onDeleteNote, onMoveNote, onPinNote, folders }
+
+// eslint-disable-next-line react/prop-types
 const NoteList = ({ notes, onNoteClick}) => {
   const [activeNote, setActiveNote] = useState(notes[0]) // Устанавливаем первую заметку активной по умолчанию
 
@@ -37,6 +38,7 @@ const NoteList = ({ notes, onNoteClick}) => {
   }
 
   const handleMenuClick = ({ key }) => {
+
     console.log(key)
     // const noteId = activeNote.id
     // if (key === 'delete') {
@@ -67,7 +69,7 @@ const NoteList = ({ notes, onNoteClick}) => {
               <Col>
                 <Dropdown
                   menu={{
-                    itemsActionsDropMenu,
+                    items,
                     onClick: handleMenuClick
                   }}
                   trigger={['click']}
