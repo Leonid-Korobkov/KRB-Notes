@@ -2,7 +2,7 @@ import { Avatar, Button, Col, Divider, Dropdown, Row, Space, Switch } from 'antd
 import { useContext } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'
-import { LoginOutlined, LogoutOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
+import { GoogleCircleFilled, LogoutOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import { Typography, message, theme } from 'antd'
 const { useToken } = theme
 const { Text } = Typography
@@ -10,32 +10,6 @@ const { Text } = Typography
 const onClick = ({ key }) => {
   message.info(`Click on item ${key}`)
 }
-const items = [
-  // {
-  //   key: '1',
-  //   label: (
-  //     <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-  //       1st menu item
-  //     </a>
-  //   )
-  // },
-  // {
-  //   key: '2',
-  //   label: (
-  //     <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-  //       2nd menu item (disabled)
-  //     </a>
-  //   )
-  // },
-  // {
-  //   key: '3',
-  //   label: (
-  //     <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
-  //       3rd menu item (disabled)
-  //     </a>
-  //   )
-  // }
-]
 
 function Login() {
   const { auth, user } = useContext(AuthContext)
@@ -145,7 +119,7 @@ function Login() {
           {contextHolder}
           <Row align="middle" style={{ marginTop: 10, padding: '5px 10px', cursor: 'pointer' }}>
             <Col span={24}>
-              <Button block icon={<LoginOutlined />} type="primary" onClick={login}>
+              <Button block icon={<GoogleCircleFilled />} type="primary" onClick={login}>
                 Войти
               </Button>
             </Col>
@@ -155,5 +129,32 @@ function Login() {
     </>
   )
 }
+
+const items = [
+  // {
+  //   key: '1',
+  //   label: (
+  //     <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+  //       1st menu item
+  //     </a>
+  //   )
+  // },
+  // {
+  //   key: '2',
+  //   label: (
+  //     <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+  //       2nd menu item (disabled)
+  //     </a>
+  //   )
+  // },
+  // {
+  //   key: '3',
+  //   label: (
+  //     <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+  //       3rd menu item (disabled)
+  //     </a>
+  //   )
+  // }
+]
 
 export default Login

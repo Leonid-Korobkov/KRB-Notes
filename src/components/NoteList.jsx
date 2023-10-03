@@ -7,12 +7,12 @@ const { Text, Paragraph, Title } = Typography
 const items = [
   {
     key: 'pin',
-    label: (<Text>Закрепить</Text>),
+    label: <Text>Закрепить</Text>,
     icon: <PushpinFilled />
   },
   {
     key: 'move',
-    label: (<Text>Переместить</Text>),
+    label: <Text>Переместить</Text>,
     icon: <FolderFilled />
   },
   {
@@ -20,25 +20,46 @@ const items = [
   },
   {
     key: 'delete',
-    label: (<Text>Удалить</Text>),
+    label: <Text>Удалить</Text>,
     danger: true,
     icon: <DeleteFilled />
   }
 ]
 
+const notes = [
+  {
+    id: 1,
+    title: 'Заметка 1. Это содержание заметки 1.',
+    content: 'Это содержание заметки 1. Здесь может быть много текста, и мы будем отображать первые 20 символов.',
+    lastDateEdited: Date.now() - 3600000 // Последнее редактирование было час назад
+  },
+  {
+    id: 2,
+    title: 'Заметка 2',
+    content: 'Это содержание заметки 2. Еще больше текста для примера.',
+    lastDateEdited: Date.now() - 7200000 // Последнее редактирование было 2 часа назад
+  },
+  {
+    id: 3,
+    title: 'Заметка 3',
+    content: 'Это содержание заметки 3. Еще больше текста для примера.',
+    lastDateEdited: Date.now() - 7200000 // Последнее редактирование было 2 часа назад
+  }
+  // Добавьте больше заметок по аналогии
+]
+
 // { notes, onNoteClick, onDeleteNote, onMoveNote, onPinNote, folders }
 
 // eslint-disable-next-line react/prop-types
-const NoteList = ({ notes, onNoteClick}) => {
+const NoteList = () => {
   const [activeNote, setActiveNote] = useState(notes[0]) // Устанавливаем первую заметку активной по умолчанию
 
   const handleNoteClick = (note) => {
     setActiveNote(note) // Устанавливаем активную заметку при клике
-    onNoteClick(note.id)
+    // onNoteClick(note.id)
   }
 
   const handleMenuClick = ({ key }) => {
-
     console.log(key)
     // const noteId = activeNote.id
     // if (key === 'delete') {
