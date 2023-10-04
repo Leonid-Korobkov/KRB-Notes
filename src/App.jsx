@@ -27,6 +27,7 @@ const App = () => {
         <SidebarCollapsedProvider>
           <NavigationSidebar />
 
+
           <Divider type="vertical" style={{ margin: 0, height: '100%' }} />
           <NotesSidebar />
 
