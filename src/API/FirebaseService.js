@@ -19,6 +19,7 @@ const json = {
     { noteId: 3, folderKey: '0-1', title: 'Заметка 1', content: 'Содержание заметки 1', lastDateEdited: Date.now() },
     { noteId: 4, folderKey: '0-1-0', title: 'Заметка 1', content: 'Содержание заметки 1', lastDateEdited: Date.now() }
   ],
+  sidebarIsCollapsed: false,
   // notesContent: [
   //   { noteId: 5, content: [
   //     {typeBlock: 'text', ...}
