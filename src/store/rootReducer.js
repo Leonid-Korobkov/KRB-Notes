@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import { folderListReducer } from './folderList/folderListReducer'
-import { notesListReducer } from './notesList/NotesListReducer'
+import { notesListReducer } from './notesList/notesListReducer'
 import { generalReducer } from './general/generalReducer'
 
 
