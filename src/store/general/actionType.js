@@ -1,0 +1,3 @@
+export const SET_ACTIVE_NOTE = 'SET_ACTIVE_NOTE'
+export const SET_ACTIVE_FOLDER = 'SET_ACTIVE_FOLDER'
+

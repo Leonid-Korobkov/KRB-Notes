@@ -1,0 +1,1 @@
+export const SELECT_ACTIVE_NOTE = 'SELECT_ACTIVE_NOTE'

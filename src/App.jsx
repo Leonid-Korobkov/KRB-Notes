@@ -4,7 +4,7 @@ import { useContext } from 'react'
 
 import { AuthContext } from './context/AuthContext'
 
-import Loader from './components/Loader/Loader'
+import Loader from './components/ui/Loader/Loader'
 import NavigationSidebar from './components/navigationSidebar/NavigationSidebar'
 import NotesSidebar from './components/notesSidebar/NotesSidebar'
 import SidebarCollapsedProvider from './context/SidebarCollapsedProvider'
