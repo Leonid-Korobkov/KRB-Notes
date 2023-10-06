@@ -24,7 +24,8 @@ function NavigationSidebar() {
 
           <Row justify="center">
             <Col span={22}>
-              <Button type="primary" block style={{ margin: '15px 0px' }} icon={<FolderFilled />}>
+              {/* type="primary"  */}
+              <Button block style={{ margin: '15px 0px' }} icon={<FolderFilled />}>
                 Все заметки
               </Button>
 

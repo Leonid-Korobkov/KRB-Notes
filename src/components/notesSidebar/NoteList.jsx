@@ -1,4 +1,4 @@
-import { List } from 'antd'
+import { Empty, List } from 'antd'
 import NoteItem from './NoteItem'
 import { useSelector } from 'react-redux'
 
@@ -28,8 +28,25 @@ import { useSelector } from 'react-redux'
 
 // eslint-disable-next-line react/prop-types
 const NoteList = () => {
-  const notes = useSelector(state => state.notes)
-  return <List dataSource={notes} renderItem={(note) => <NoteItem note={note} />} />
+  // .filter(note => note.folderKey === '0-0')
+  const notes = useSelector((state) => state.notes)
+  return (
+    <List
+      locale={{
+        emptyText: (
+          <Empty
+            description={
+              <span>
+                Тут пусто
+              </span>
+            }
+          />
+        )
+      }}
+      dataSource={notes}
+      renderItem={(note) => <NoteItem note={note} />}
+    />
+  )
 }
 
 export default NoteList

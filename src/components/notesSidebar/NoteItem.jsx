@@ -3,6 +3,7 @@ import { List, Card, Typography, Dropdown, Row, Col } from 'antd'
 import { PushpinFilled, MoreOutlined, DeleteFilled, FolderFilled } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { setActiveNote } from '../../store/general/action'
+import { useRef } from 'react'
 
 const { Text, Paragraph, Title } = Typography
 
@@ -32,11 +33,14 @@ const items = [
 const NoteItem = ({ note }) => {
   const dispatch = useDispatch()
   const activeNoteId = useSelector((state) => state.general.activeNoteId)
+  const refDropdownDots = useRef(null)
 
   const { noteId, title, lastDateEdited } = note
   // const [activeNote, setActiveNote] = useState(notes[0]) // Устанавливаем первую заметку активной по умолчанию
-  const handleNoteClick = (noteId) => {
-    dispatch(setActiveNote(noteId))
+  const handleNoteClick = (e, noteId) => {
+    if (!(e.target.closest('.anticon-more') == refDropdownDots.current)) {
+      dispatch(setActiveNote(noteId))
+    }
     // setActiveNote(note) // Устанавливаем активную заметку при клике
     // onNoteClick(note.id)
   }
@@ -58,7 +62,7 @@ const NoteItem = ({ note }) => {
       <Card
         size="small"
         style={{ background: activeNoteId === noteId ? '#9254de' : '', width: '100%', border: 'none', cursor: 'pointer' }}
-        onClick={() => handleNoteClick(noteId)}
+        onClick={(e) => handleNoteClick(e, noteId)}
       >
         <Row justify="space-between">
           <Col span={22}>
@@ -74,7 +78,7 @@ const NoteItem = ({ note }) => {
               }}
               trigger={['click']}
             >
-              <MoreOutlined />
+              <MoreOutlined ref={refDropdownDots} />
             </Dropdown>
           </Col>
         </Row>
