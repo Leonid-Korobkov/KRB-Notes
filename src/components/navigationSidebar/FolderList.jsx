@@ -1,14 +1,28 @@
-import { Tree, Dropdown, Typography } from 'antd'
+import { Tree, Dropdown, Typography, Button } from 'antd'
 import { DeleteFilled, FolderFilled, DownOutlined, MoreOutlined, EditFilled } from '@ant-design/icons'
 const { DirectoryTree } = Tree
 const { Text } = Typography
 
+import { useDispatch, useSelector } from 'react-redux'
+import { setActiveFolder, setActiveNote } from '../../store/general/generalSlice'
+
 function FolderList() {
-  const onSelect = (keys, info) => {
-    console.log('Trigger Select', keys, info)
-  }
-  const onExpand = (keys, info) => {
-    console.log('Trigger Expand', keys, info)
+  const activeFolderKey = useSelector((state) => state.general.activeFolderKey)
+  const notes = useSelector((state) => state.notes)
+  let folders = useSelector((state) => state.folders)
+
+  const dispatch = useDispatch()
+
+  folders = changeFoldersStructure(folders)
+
+  const onSelect = (keys) => {
+    const key = keys[0]
+    dispatch(setActiveFolder(key))
+
+    const note = notes.find((note) => note.folderKey == key)
+    if (note) {
+      dispatch(setActiveNote(note.noteId))
+    }
   }
 
   return (
@@ -16,8 +30,8 @@ function FolderList() {
       showLine
       switcherIcon={<DownOutlined />}
       onSelect={onSelect}
-      onExpand={onExpand}
-      treeData={treeData}
+      treeData={folders}
+      defaultSelectedKeys={[activeFolderKey]}
       // onRightClick={}
     />
   )
@@ -36,7 +50,9 @@ const FolderActionsMenu = () => {
       }}
       trigger={['click']}
     >
-      <MoreOutlined />
+      <Button type="text" size="small">
+        <MoreOutlined />
+      </Button>
     </Dropdown>
   )
 }
@@ -51,48 +67,21 @@ const CustomTreeNode = ({ title, children }) => {
     </span>
   )
 }
+const changeFoldersStructure = (folders) => {
+  return folders.map((f) => {
+    const children = f.childrenFolder ? changeFoldersStructure(f.childrenFolder) : null
 
-const treeData = [
-  {
-    title: (
-      <CustomTreeNode title={`Заметки (${4})`}>
-        <FolderActionsMenu style={{}} />
-      </CustomTreeNode>
-    ),
-    key: '0-0',
-    children: [
-      {
-        title: (
-          <CustomTreeNode title="Важное">
-            <FolderActionsMenu />
-          </CustomTreeNode>
-        ),
-        key: '0-0-0'
-      },
-      {
-        title: 'leaf 0-1',
-        key: '0-0-1',
-        isLeaf: true
-      }
-    ]
-  },
-  {
-    title: 'parent 1',
-    key: '0-1',
-    children: [
-      {
-        title: 'leaf 1-0',
-        key: '0-1-0',
-        isLeaf: true
-      },
-      {
-        title: 'leaf 1-1',
-        key: '0-1-1',
-        isLeaf: true
-      }
-    ]
-  }
-]
+    return {
+      title: (
+        <CustomTreeNode title={`${f.folderName} (${f.amountNotes})`}>
+          <FolderActionsMenu />
+        </CustomTreeNode>
+      ),
+      key: f.folderKey,
+      children: children
+    }
+  })
+}
 
 const items = [
   {

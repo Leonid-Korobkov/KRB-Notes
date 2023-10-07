@@ -1,6 +1,15 @@
-import { createStore } from 'redux'
-import { rootReducer } from './rootReducer'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import { configureStore } from '@reduxjs/toolkit'
+import generalSlice from './general/generalSlice'
+import folderListSlice from './folderList/folderListSlice'
+import notesListSlice from './notesList/notesListSlice'
 
-// npm i redux react-redux
-export const store = createStore(rootReducer, composeWithDevTools())
+
+const store = configureStore({
+  reducer: {
+    folders: folderListSlice,
+    notes: notesListSlice,
+    general: generalSlice
+  }
+})
+
+export default store

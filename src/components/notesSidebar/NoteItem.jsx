@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
-import { List, Card, Typography, Dropdown, Row, Col } from 'antd'
+import { List, Card, Typography, Dropdown, Row, Col, Button } from 'antd'
 import { PushpinFilled, MoreOutlined, DeleteFilled, FolderFilled } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { setActiveNote } from '../../store/general/action'
+
 import { useRef } from 'react'
+import { setActiveNote } from '../../store/general/generalSlice'
 
 const { Text, Paragraph, Title } = Typography
 
@@ -38,7 +39,7 @@ const NoteItem = ({ note }) => {
   const { noteId, title, lastDateEdited } = note
   // const [activeNote, setActiveNote] = useState(notes[0]) // Устанавливаем первую заметку активной по умолчанию
   const handleNoteClick = (e, noteId) => {
-    if (!(e.target.closest('.anticon-more') == refDropdownDots.current)) {
+    if (!(e.target.closest('.ant-btn-text') == refDropdownDots.current)) {
       dispatch(setActiveNote(noteId))
     }
     // setActiveNote(note) // Устанавливаем активную заметку при клике
@@ -65,7 +66,7 @@ const NoteItem = ({ note }) => {
         onClick={(e) => handleNoteClick(e, noteId)}
       >
         <Row justify="space-between">
-          <Col span={22}>
+          <Col span={20}>
             <Title level={5} style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', width: '100%' }}>
               {title}
             </Title>
@@ -78,7 +79,9 @@ const NoteItem = ({ note }) => {
               }}
               trigger={['click']}
             >
-              <MoreOutlined ref={refDropdownDots} />
+              <Button ref={refDropdownDots} type="text" size="small">
+                <MoreOutlined />
+              </Button>
             </Dropdown>
           </Col>
         </Row>
