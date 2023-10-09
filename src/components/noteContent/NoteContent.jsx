@@ -52,32 +52,73 @@
 // }
 
 // export default NoteContent
-import { Layout, Row, Col, Input } from 'antd'
+import { Layout, Row, Col, Input, Typography, Modal, Button } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
-import { editNoteContent, editNoteTitle, selectActiveNote } from '../../store/notesList/notesListSlice'
+import { editNoteContent, editNoteTitle, recoverNote } from '../../store/notesList/notesListSlice'
 
 import TextArea from 'antd/es/input/TextArea'
+import { formatDate } from '../../utils/convertDate'
+import { selectActiveNote } from '../../store/selectors'
+import { useState } from 'react'
 
 const { Content } = Layout
+const { Text } = Typography
 
 const NoteContent = () => {
   const note = useSelector(selectActiveNote)
+  const activeFolderKey = useSelector((state) => state.general.activeFolderKey)
+
   const dispatch = useDispatch()
 
-  const { title, content } = note
+  const [modalErrorOpen, setModalErrorOpen] = useState(false)
+
+  if (!note) return
+
+  const { title, content, lastDateEdited, noteId } = note
 
   function handleTitleChange(e) {
-    dispatch(editNoteTitle({ content: e.target.value, id: note.noteId }))
+    if (activeFolderKey == 'deletedNotes') {
+      setModalErrorOpen(true)
+    } else {
+      dispatch(editNoteTitle({ content: e.target.value, id: noteId }))
+    }
   }
 
   function handleContentChange(e) {
-    dispatch(editNoteContent({ content: e.target.value, id: note.noteId }))
+    if (activeFolderKey == 'deletedNotes') {
+      setModalErrorOpen(true)
+    } else {
+      dispatch(editNoteContent({ content: e.target.value, id: noteId }))
+    }
+  }
+
+  function confirmModal(note) {
+    dispatch(recoverNote(note))
+    setModalErrorOpen(false)
+  }
+
+  function cancelModal() {
+    setModalErrorOpen(false)
   }
 
   return (
     <Content style={{ overflow: 'auto', padding: '20px', maxWidth: 800, margin: '0px auto' }}>
       <Row justify="center" style={{ width: '100%', height: '100%' }}>
         <Col span={24} style={{ width: '100%', height: '100%' }}>
+          <Modal
+            title="Удаленную заметку нельзя редактировать"
+            centered
+            open={modalErrorOpen}
+            onOk={() => confirmModal(note)}
+            onCancel={cancelModal}
+            okText={'Восстановить'}
+            cancelText={'Отменить'}
+          >
+            <Text>Может вы хотите восстановить заметку?</Text>
+          </Modal>
+          <Text style={{ display: 'block', marginBottom: 20, textAlign: 'center' }} type="secondary">
+            {formatDate(lastDateEdited)}
+          </Text>
           <Input style={{ marginBottom: 20 }} placeholder="Название заметки" value={title} onChange={handleTitleChange} />
           <TextArea autoSize value={content} onChange={handleContentChange} />
         </Col>

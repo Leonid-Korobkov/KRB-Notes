@@ -1,10 +1,13 @@
 /* eslint-disable react/prop-types */
 import { List, Card, Typography, Dropdown, Row, Col, Button } from 'antd'
-import { PushpinFilled, MoreOutlined, DeleteFilled, FolderFilled } from '@ant-design/icons'
+import { PushpinFilled, MoreOutlined, DeleteFilled, FolderFilled, UndoOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useRef } from 'react'
 import { setActiveNote } from '../../store/general/generalSlice'
+import { formatDateTime } from '../../utils/convertDate'
+import { removeNote } from '../../store/notesList/notesListSlice'
+import { removeDeletedNote } from '../../store/deletedNotesList/deletedNotesSlice'
 
 const { Text, Paragraph, Title } = Typography
 
@@ -29,14 +32,33 @@ const items = [
     icon: <DeleteFilled />
   }
 ]
-// { notes, onNoteClick, onDeleteNote, onMoveNote, onPinNote, folders }
+
+const itemsForDeletedNotes = [
+  {
+    key: 'move',
+    label: <Text>Переместить</Text>,
+    icon: <FolderFilled />
+  },
+  {
+    key: 'recover',
+    label: <Text>Восстановить</Text>,
+    icon: <UndoOutlined />
+  },
+  {
+    key: 'delete',
+    label: <Text>Удалить</Text>,
+    danger: true,
+    icon: <DeleteFilled />
+  }
+]
 
 const NoteItem = ({ note }) => {
   const dispatch = useDispatch()
   const activeNoteId = useSelector((state) => state.general.activeNoteId)
+  const activeFolderKey = useSelector((state) => state.general.activeFolderKey)
   const refDropdownDots = useRef(null)
 
-  const { noteId, title, lastDateEdited } = note
+  const { noteId, title, lastDateEdited, content } = note
   // const [activeNote, setActiveNote] = useState(notes[0]) // Устанавливаем первую заметку активной по умолчанию
   const handleNoteClick = (e, noteId) => {
     if (!e.target.closest('.ant-btn-text') && !e.target.closest('.ant-dropdown-menu')) {
@@ -45,12 +67,11 @@ const NoteItem = ({ note }) => {
   }
 
   const handleMenuClick = ({ key }) => {
-    // const noteId = activeNote.id
-    // if (key === 'delete') {
-    //   onDeleteNote(noteId)
-    // } else if (key === 'move') {
-    //   // Обработка перемещения заметки в другую папку
-    // } else if (key === 'pin') {
+    if (key === 'delete') {
+      activeFolderKey == 'deletedNotes' ? dispatch(removeDeletedNote({ id: noteId })) : dispatch(removeNote({ id: noteId }))
+    } else if (key === 'move') {
+    }
+    // else if (key === 'pin') {
     //   onPinNote(noteId)
     // }
   }
@@ -71,7 +92,7 @@ const NoteItem = ({ note }) => {
           <Col>
             <Dropdown
               menu={{
-                items,
+                items: activeFolderKey == 'deletedNotes' ? itemsForDeletedNotes : items,
                 onClick: handleMenuClick
               }}
               trigger={['click']}
@@ -83,8 +104,10 @@ const NoteItem = ({ note }) => {
           </Col>
         </Row>
 
-        <Paragraph style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{note.content}</Paragraph>
-        <Text type="secondary">{new Date(lastDateEdited).toLocaleString()}</Text>
+        <Paragraph style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+          {content != '' ? content : 'Без содержимого'}
+        </Paragraph>
+        <Text type="secondary">{formatDateTime(lastDateEdited)}</Text>
       </Card>
     </List.Item>
   )

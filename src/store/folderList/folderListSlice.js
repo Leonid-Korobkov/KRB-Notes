@@ -18,12 +18,34 @@ const folderListSlice = createSlice({
   name: 'folders',
   initialState,
   reducers: {
-    // selectActiveFolder(state, action) {
-    //   state.activeFolderKey = action.payload
-    // }
+    setAmountNotesForFolder(state, action) {
+      const { folderKey, delta } = action.payload
+      const folderToUpdate = findFolderByKey(state, folderKey)
+
+      if (folderToUpdate) {
+        folderToUpdate.amountNotes += delta
+      }
+    }
   }
 })
 
-// export const { selectActiveFolder } = folderListSlice.actions
+function findFolderByKey(folders, folderKey) {
+  for (const folder of folders) {
+    if (folder.folderKey === folderKey) {
+      return folder
+    }
+
+    if (folder.childrenFolder) {
+      const found = findFolderByKey(folder.childrenFolder, folderKey)
+      if (found) {
+        return found
+      }
+    }
+  }
+
+  return null
+}
+
+export const { setAmountNotesForFolder } = folderListSlice.actions
 
 export default folderListSlice.reducer

@@ -8,21 +8,18 @@ const generalSlice = createSlice({
   reducers: {
     setActiveNote(state, action) {
       state.activeNoteId = action.payload
-      // return { ...state, activeNoteId: action.payload }
     },
     setActiveFolder(state, action) {
-      return { ...state, activeFolderKey: action.payload }
+      state.activeFolderKey = action.payload
     },
     setStatusLoading(state, action) {
-      return { ...state, statusLoading: action.payload }
+      state.statusLoading = action.payload
     },
     setDarkMode(state, action) {
-      return { ...state, darkMode: action.payload }
+      state.darkMode = action.payload
     }
   }
 })
-
-
 
 export const { setActiveNote, setActiveFolder, setStatusLoading, setDarkMode } = generalSlice.actions
 

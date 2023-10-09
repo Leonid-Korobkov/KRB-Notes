@@ -1,7 +1,8 @@
 import { Empty, List } from 'antd'
 import NoteItem from './NoteItem'
 import { useSelector } from 'react-redux'
-import { selectNotesForFolder } from '../../store/notesList/notesListSlice'
+import { selectNotesForFolder } from '../../store/selectors'
+
 
 // { notes, onNoteClick, onDeleteNote, onMoveNote, onPinNote, folders }
 

@@ -22,6 +22,8 @@ function FolderList() {
     const note = notes.find((note) => note.folderKey == key)
     if (note) {
       dispatch(setActiveNote(note.noteId))
+    } else {
+      dispatch(setActiveNote(null))
     }
   }
 

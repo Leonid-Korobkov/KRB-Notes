@@ -23,6 +23,10 @@ function NavigationSidebar() {
     dispatch(setActiveFolder('all'))
   }
 
+  function handleDeletedNotesClick() {
+    dispatch(setActiveFolder('deletedNotes'))
+  }
+
   return (
     <Sider style={{ overflow: 'auto' }} theme="light" width={200} trigger={null} collapsible collapsed={isCollapsed} collapsedWidth={0}>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -57,7 +61,7 @@ function NavigationSidebar() {
         <div>
           <Row justify="center">
             <Col span={22}>
-              <Button block style={{ margin: '15px 0px', opacity: 0.4 }} icon={<DeleteFilled />}>
+              <Button danger type={activeFolderKey === 'deletedNotes' ? 'primary' : 'dashed'} block style={{ margin: '15px 0px', opacity: 0.4}} icon={<DeleteFilled />} onClick={handleDeletedNotesClick}>
                 Удаленные
               </Button>
             </Col>
