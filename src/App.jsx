@@ -9,30 +9,33 @@ import NavigationSidebar from './components/navigationSidebar/NavigationSidebar'
 import NotesSidebar from './components/notesSidebar/NotesSidebar'
 import SidebarCollapsedProvider from './context/SidebarCollapsedProvider'
 import NoteContent from './components/noteContent/NoteContent'
-
-const { Content } = Layout
-const { Text } = Typography
+import { useSelector } from 'react-redux'
 
 const App = () => {
+  const isDarkMode = useSelector((state) => state.general.darkMode)
+
   let { isLoading } = useContext(AuthContext)
 
   if (isLoading) return <Loader />
 
   return (
     <ConfigProvider
-      theme={{
-        algorithm: theme.darkAlgorithm
-      }}
+      theme={
+        isDarkMode
+          ? {
+              algorithm: theme.darkAlgorithm
+            }
+          : ''
+      }
     >
       <Layout style={{ height: '100%' }}>
         <SidebarCollapsedProvider>
           <NavigationSidebar />
 
-
           <Divider type="vertical" style={{ margin: 0, height: '100%' }} />
           <NotesSidebar />
 
-          <NoteContent/>
+          <NoteContent />
         </SidebarCollapsedProvider>
       </Layout>
     </ConfigProvider>

@@ -11,9 +11,13 @@ const notesListSlice = createSlice({
   name: 'notes',
   initialState,
   reducers: {
-    selectActiveNoteItem(state, action) {
-      console.log('selectActiveNoteItem', state, action)
-      // state.activeNoteId = action.payload
+    editNoteTitle(state, action) {
+      const note = state.find(note => note.noteId === action.payload.id)
+      note.title = action.payload.content
+    },
+    editNoteContent(state, action) {
+      const note = state.find(note => note.noteId === action.payload.id)
+      note.content = action.payload.content
     }
   }
 })
@@ -37,6 +41,6 @@ export const selectActiveNote = createSelector(
   }
 )
 
-export const { selectActiveNoteItem } = notesListSlice.actions
+export const { editNoteTitle, editNoteContent } = notesListSlice.actions
 
 export default notesListSlice.reducer

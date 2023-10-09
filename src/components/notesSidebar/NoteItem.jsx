@@ -39,15 +39,12 @@ const NoteItem = ({ note }) => {
   const { noteId, title, lastDateEdited } = note
   // const [activeNote, setActiveNote] = useState(notes[0]) // Устанавливаем первую заметку активной по умолчанию
   const handleNoteClick = (e, noteId) => {
-    if (!(e.target.closest('.ant-btn-text') == refDropdownDots.current)) {
+    if (!e.target.closest('.ant-btn-text') && !e.target.closest('.ant-dropdown-menu')) {
       dispatch(setActiveNote(noteId))
     }
-    // setActiveNote(note) // Устанавливаем активную заметку при клике
-    // onNoteClick(note.id)
   }
 
   const handleMenuClick = ({ key }) => {
-    // console.log(key)
     // const noteId = activeNote.id
     // if (key === 'delete') {
     //   onDeleteNote(noteId)
@@ -68,7 +65,7 @@ const NoteItem = ({ note }) => {
         <Row justify="space-between">
           <Col span={20}>
             <Title level={5} style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', width: '100%' }}>
-              {title}
+              {title != '' ? title : 'Без названия'}
             </Title>
           </Col>
           <Col>

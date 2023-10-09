@@ -4,6 +4,8 @@ import { AuthContext } from '../context/AuthContext'
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'
 import { GoogleCircleFilled, LogoutOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import { Typography, message, theme } from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+import { setDarkMode } from '../store/general/generalSlice'
 const { useToken } = theme
 const { Text } = Typography
 
@@ -12,6 +14,13 @@ const onClick = ({ key }) => {
 }
 
 function Login() {
+  const dispatch = useDispatch()
+  const isDarkMode = useSelector((state) => state.general.darkMode)
+
+  function handleThemeChange() {
+    dispatch(setDarkMode(!isDarkMode))
+  }
+
   const { auth, user } = useContext(AuthContext)
   const [messageApi, contextHolder] = message.useMessage()
 
@@ -85,7 +94,7 @@ function Login() {
                   }}
                 >
                   <Text>Темная тема</Text>
-                  <Switch checkedChildren={<CheckOutlined />} unCheckedChildren={<CloseOutlined />} defaultChecked />
+                  <Switch checkedChildren={<CheckOutlined />} unCheckedChildren={<CloseOutlined />} checked={isDarkMode} onChange={handleThemeChange}/>
                 </Space>
                 <Divider
                   style={{
