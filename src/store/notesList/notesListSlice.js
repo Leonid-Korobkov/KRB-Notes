@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { v4 as id } from 'uuid'
-import { setActiveFolder, setActiveNote } from '../general/generalSlice'
+import { setActiveNote } from '../general/generalSlice'
 import { selectNotesForFolder } from '../selectors'
-import { addDeletedNote, removeDeletedNote } from '../deletedNotesList/deletedNotesSlice'
+import { addDeletedNote, moveDeletedNoteByKey, removeDeletedNote } from '../deletedNotesList/deletedNotesSlice'
 import { setAmountNotesForFolder } from '../folderList/folderListSlice'
 
 const initialState = [
@@ -24,6 +24,7 @@ const notesListSlice = createSlice({
     editNoteContent(state, action) {
       const note = state.find(note => note.noteId === action.payload.id)
       note.content = action.payload.content
+      note.lastDateEdited = Date.now()
     },
     createNewNote(state, action) {
       const { id, folderKey } = action.payload
@@ -35,17 +36,38 @@ const notesListSlice = createSlice({
     },
     addReadyNote(state, action) {
       state.push(action.payload)
+    },
+    moveNoteByKey(state, action) {
+      const index = state.findIndex(note => note.noteId === action.payload.id)
+      state[index].folderKey = action.payload.folderKey
     }
   }
 })
 
 export function recoverNote(note) {
-  return (dispatch) => {
-    // const {noteId, folderKey} = note
+  return dispatch => {
     dispatch(addReadyNote(note))
-    dispatch(removeDeletedNote({id: note.noteId}))
-    // dispatch(setActiveFolder(folderKey))
-    // dispatch(setActiveNote(noteId))
+    dispatch(removeDeletedNote({ id: note.noteId }))
+  }
+}
+
+export function moveNote(noteData) {
+  return (dispatch, getState) => {
+    const activeFolderKey = getState().general.activeFolderKey
+    if (activeFolderKey == 'deletedNotes') {
+      const deletedNotes = getState().deletedNotes
+      const note = deletedNotes.find(note => note.noteId === noteData.id)
+      const newNote = { ...note, folderKey: noteData.folderKey }
+      dispatch(addReadyNote(newNote))
+      dispatch(removeDeletedNote({ id: noteData.id }))
+      dispatch(setActiveNote(null))
+      dispatch(setAmountNotesForFolder({ folderKey: noteData.folderKey, delta: 1 }))
+    } else {
+      dispatch(moveNoteByKey(noteData))
+      dispatch(setActiveNote(null))
+      dispatch(setAmountNotesForFolder({ folderKey: activeFolderKey, delta: -1 }))
+      dispatch(setAmountNotesForFolder({ folderKey: noteData.folderKey, delta: 1 }))
+    }
   }
 }
 
@@ -55,7 +77,7 @@ export function addNewNote() {
     const newId = id()
     dispatch(createNewNote({ folderKey: activeFolderKey, id: newId }))
     dispatch(setActiveNote(newId))
-    dispatch(setAmountNotesForFolder({ folderKey: activeFolderKey, delta: 1}))
+    dispatch(setAmountNotesForFolder({ folderKey: activeFolderKey, delta: 1 }))
   }
 }
 
@@ -69,18 +91,18 @@ export function removeNote({ id }) {
     const index = state.notes.findIndex(note => note.noteId === id)
 
     if (activeNoteId === id) {
-      const nonActiveNoteId = notesForFolder.find(note => note.noteId !== activeNoteId)?.noteId
-      if (nonActiveNoteId) {
-        dispatch(setActiveNote(nonActiveNoteId))
+      const nonActiveNote = notesForFolder.find(note => note.noteId !== activeNoteId)
+      if (nonActiveNote) {
+        dispatch(setActiveNote(nonActiveNote.noteId))
       }
     }
+
     dispatch(addDeletedNote(noteForDelete))
     dispatch(deleteNoteFromNotes({ id: id }))
-    dispatch(setAmountNotesForFolder({ folderKey: state.notes[index].folderKey, delta: -1}))
+    dispatch(setAmountNotesForFolder({ folderKey: state.notes[index].folderKey, delta: -1 }))
   }
 }
 
-
-export const { editNoteTitle, editNoteContent, createNewNote, deleteNoteFromNotes, addReadyNote } = notesListSlice.actions
+export const { editNoteTitle, editNoteContent, createNewNote, deleteNoteFromNotes, addReadyNote, moveNoteByKey } = notesListSlice.actions
 
 export default notesListSlice.reducer

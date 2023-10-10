@@ -61,9 +61,29 @@ function NavigationSidebar() {
         <div>
           <Row justify="center">
             <Col span={22}>
-              <Button danger type={activeFolderKey === 'deletedNotes' ? 'primary' : 'dashed'} block style={{ margin: '15px 0px', opacity: 0.4}} icon={<DeleteFilled />} onClick={handleDeletedNotesClick}>
-                Удаленные
-              </Button>
+              {activeFolderKey === 'deletedNotes' ? (
+                <Button
+                  danger
+                  type={'primary'}
+                  block
+                  style={{ margin: '15px 0px' }}
+                  icon={<DeleteFilled />}
+                  onClick={handleDeletedNotesClick}
+                >
+                  Удаленные
+                </Button>
+              ) : (
+                <Button
+                  danger
+                  type={'dashed'}
+                  block
+                  style={{ margin: '15px 0px', opacity: 0.4 }}
+                  icon={<DeleteFilled />}
+                  onClick={handleDeletedNotesClick}
+                >
+                  Удаленные
+                </Button>
+              )}
             </Col>
           </Row>
         </div>

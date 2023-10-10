@@ -9,7 +9,7 @@ export function formatDate(timestamp) {
   const hours = date.getHours()
   const minutes = date.getMinutes()
 
-  const formattedDate = `${day} ${months[month]} ${year}, ${hours}:${minutes}`
+  const formattedDate = `${day} ${months[month]} ${year}, ${hours}:${minutes > 10 ? minutes : '0' + minutes}`
   return formattedDate
 }
 

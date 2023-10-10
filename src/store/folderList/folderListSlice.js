@@ -29,7 +29,7 @@ const folderListSlice = createSlice({
   }
 })
 
-function findFolderByKey(folders, folderKey) {
+export function findFolderByKey(folders, folderKey) {
   for (const folder of folders) {
     if (folder.folderKey === folderKey) {
       return folder

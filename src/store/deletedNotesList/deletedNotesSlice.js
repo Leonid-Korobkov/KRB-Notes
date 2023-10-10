@@ -16,11 +16,14 @@ const deletedNotesSlice = createSlice({
     removeDeletedNote(state, action) {
       const index = state.findIndex(note => note.noteId === action.payload.id)
       state.splice(index, 1)
+    },
+    moveDeletedNoteByKey(state, action) {
+      const index = state.findIndex(note => note.noteId === action.payload.id)
+      state[index].folderKey = action.payload.folderKey
     }
   }
 })
 
-
-export const { addDeletedNote, removeDeletedNote } = deletedNotesSlice.actions
+export const { addDeletedNote, removeDeletedNote, moveDeletedNoteByKey } = deletedNotesSlice.actions
 
 export default deletedNotesSlice.reducer

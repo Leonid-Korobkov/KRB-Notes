@@ -1,12 +1,13 @@
 /* eslint-disable react/prop-types */
-import { List, Card, Typography, Dropdown, Row, Col, Button } from 'antd'
+import { List, Card, Typography, Dropdown, Row, Col, Button, Modal } from 'antd'
 import { PushpinFilled, MoreOutlined, DeleteFilled, FolderFilled, UndoOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
+import FolderListMove from '../navigationSidebar/FolderListMove'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { setActiveNote } from '../../store/general/generalSlice'
 import { formatDateTime } from '../../utils/convertDate'
-import { removeNote } from '../../store/notesList/notesListSlice'
+import { moveNote, recoverNote, removeNote } from '../../store/notesList/notesListSlice'
 import { removeDeletedNote } from '../../store/deletedNotesList/deletedNotesSlice'
 
 const { Text, Paragraph, Title } = Typography
@@ -57,19 +58,37 @@ const NoteItem = ({ note }) => {
   const activeNoteId = useSelector((state) => state.general.activeNoteId)
   const activeFolderKey = useSelector((state) => state.general.activeFolderKey)
   const refDropdownDots = useRef(null)
+  const [selectedFolderKey, setSelectedFolderKey] = useState(null)
 
   const { noteId, title, lastDateEdited, content } = note
-  // const [activeNote, setActiveNote] = useState(notes[0]) // Устанавливаем первую заметку активной по умолчанию
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const handleOk = () => {
+    dispatch(moveNote({ folderKey: selectedFolderKey, id: noteId }))
+    setIsModalOpen(false)
+  }
+  const handleCancel = () => {
+    setIsModalOpen(false)
+  }
+
+  function onSelect(key) {
+    setSelectedFolderKey(key[0])
+  }
+
   const handleNoteClick = (e, noteId) => {
     if (!e.target.closest('.ant-btn-text') && !e.target.closest('.ant-dropdown-menu')) {
       dispatch(setActiveNote(noteId))
     }
   }
 
-  const handleMenuClick = ({ key }) => {
+  const handleMenuClick = ({key}) => {
     if (key === 'delete') {
       activeFolderKey == 'deletedNotes' ? dispatch(removeDeletedNote({ id: noteId })) : dispatch(removeNote({ id: noteId }))
     } else if (key === 'move') {
+      setIsModalOpen(true)
+    } else if (key === 'recover') {
+      dispatch(recoverNote(note))
     }
     // else if (key === 'pin') {
     //   onPinNote(noteId)
@@ -78,6 +97,15 @@ const NoteItem = ({ note }) => {
 
   return (
     <List.Item style={{ padding: 10 }}>
+      <Modal
+        title="Выберите папку, в которую хотите переместить заметку"
+        centered
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <FolderListMove onSelect={onSelect} />
+      </Modal>
       <Card
         size="small"
         style={{ background: activeNoteId === noteId ? '#9254de' : '', width: '100%', border: 'none', cursor: 'pointer' }}

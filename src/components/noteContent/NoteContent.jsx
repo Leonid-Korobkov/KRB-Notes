@@ -52,7 +52,7 @@
 // }
 
 // export default NoteContent
-import { Layout, Row, Col, Input, Typography, Modal, Button } from 'antd'
+import { Layout, Row, Col, Input, Typography, Modal } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { editNoteContent, editNoteTitle, recoverNote } from '../../store/notesList/notesListSlice'
 
