@@ -6,6 +6,8 @@ import Login from '../Login'
 import FolderList from './FolderList'
 import { useContext } from 'react'
 import { SidebarCollapsedContext } from '../../context/SidebarCollapsedContext'
+import { useDispatch, useSelector } from 'react-redux'
+import { setActiveFolder } from '../../store/general/generalSlice'
 
 const { Sider } = Layout
 
@@ -13,6 +15,17 @@ const { Text } = Typography
 
 function NavigationSidebar() {
   const { isCollapsed } = useContext(SidebarCollapsedContext)
+  const dispatch = useDispatch()
+  const activeFolderKey = useSelector((state) => state.general.activeFolderKey)
+  const notesLength = useSelector((state) => state.notes).length
+
+  function handleAllNotesClick() {
+    dispatch(setActiveFolder('all'))
+  }
+
+  function handleDeletedNotesClick() {
+    dispatch(setActiveFolder('deletedNotes'))
+  }
 
   return (
     <Sider style={{ overflow: 'auto' }} theme="light" width={200} trigger={null} collapsible collapsed={isCollapsed} collapsedWidth={0}>
@@ -24,8 +37,15 @@ function NavigationSidebar() {
 
           <Row justify="center">
             <Col span={22}>
-              <Button type="primary" block style={{ margin: '15px 0px' }} icon={<FolderFilled />}>
-                Все заметки
+              {/* type="primary"  */}
+              <Button
+                type={activeFolderKey === 'all' ? 'primary' : 'default'}
+                block
+                style={{ margin: '15px 0px' }}
+                onClick={handleAllNotesClick}
+                icon={<FolderFilled />}
+              >
+                Все заметки ({notesLength})
               </Button>
 
               <Row>
@@ -41,9 +61,29 @@ function NavigationSidebar() {
         <div>
           <Row justify="center">
             <Col span={22}>
-              <Button block style={{ margin: '15px 0px', opacity: 0.4 }} icon={<DeleteFilled />}>
-                Удаленные
-              </Button>
+              {activeFolderKey === 'deletedNotes' ? (
+                <Button
+                  danger
+                  type={'primary'}
+                  block
+                  style={{ margin: '15px 0px' }}
+                  icon={<DeleteFilled />}
+                  onClick={handleDeletedNotesClick}
+                >
+                  Удаленные
+                </Button>
+              ) : (
+                <Button
+                  danger
+                  type={'dashed'}
+                  block
+                  style={{ margin: '15px 0px', opacity: 0.4 }}
+                  icon={<DeleteFilled />}
+                  onClick={handleDeletedNotesClick}
+                >
+                  Удаленные
+                </Button>
+              )}
             </Col>
           </Row>
         </div>

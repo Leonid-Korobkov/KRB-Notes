@@ -28,3 +28,7 @@ body {
   overflow: hidden;
   position: relative;
 }
+
+[contenteditable='true'] {
+  outline: none;
+}

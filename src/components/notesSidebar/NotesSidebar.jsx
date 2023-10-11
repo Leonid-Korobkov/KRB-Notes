@@ -5,6 +5,8 @@ import NoteList from './NoteList'
 import { SidebarCollapsedContext } from '../../context/SidebarCollapsedContext'
 
 import { useContext } from 'react'
+import { useDispatch } from 'react-redux'
+import { addNewNote } from '../../store/notesList/notesListSlice'
 
 const { Sider } = Layout
 const { Search } = Input
@@ -12,6 +14,11 @@ const { Search } = Input
 function NotesSidebar() {
   const { isCollapsed, setIsCollapsed } = useContext(SidebarCollapsedContext)
   const onSearch = (value, _e, info) => console.log(info?.source, value)
+  const dispatch = useDispatch()
+
+  function handleNewNoteClick() {
+    dispatch(addNewNote())
+  }
 
   return (
     <Sider style={{ overflow: 'auto' }} theme="light" width={300}>
@@ -48,7 +55,7 @@ function NotesSidebar() {
         />
 
         <Tooltip title="Добавить заметку">
-          <Button type="primary" shape="circle" icon={<PlusOutlined />} />
+          <Button type="primary" shape="circle" icon={<PlusOutlined />} onClick={handleNewNoteClick} />
         </Tooltip>
       </div>
       <NoteList></NoteList>
