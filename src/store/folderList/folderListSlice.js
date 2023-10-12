@@ -4,12 +4,12 @@ const initialState = [
   { folderKey: '0-0', folderName: 'Важное', amountNotes: 2, nameSort: 'abc' },
   {
     folderKey: '0-1',
-    folderName: 'Name',
+    folderName: 'Учеба',
     amountNotes: 1,
     childrenFolder: [
-      { folderKey: '0-1-0', folderName: 'Прог', amountNotes: 1 },
-      { folderKey: '0-1-1', folderName: 'Код', amountNotes: 0 },
-      { folderKey: '0-1-2', folderName: 'Код 2', amountNotes: 0 }
+      { folderKey: '0-1-0', folderName: 'Матан', amountNotes: 1 },
+      { folderKey: '0-1-1', folderName: 'Ин.яз', amountNotes: 0 },
+      { folderKey: '0-1-2', folderName: 'Физика', amountNotes: 0 }
     ]
   }
 ]

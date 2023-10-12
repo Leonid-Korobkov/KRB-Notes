@@ -1,14 +1,8 @@
-import { firebaseConfig } from '../firebaseConfig/firebaseConfig.js'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { auth, app } from '../firebaseConfig/firebaseConfig.js'
+import { onAuthStateChanged } from 'firebase/auth'
 
-import { initializeApp } from 'firebase/app'
 import { useEffect, useState } from 'react'
 import { AuthContext } from './AuthContext.js'
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig)
-const auth = getAuth(app)
-// , fireStore, user, isLoading
 
 // eslint-disable-next-line react/prop-types
 function AuthProvider({ children }) {

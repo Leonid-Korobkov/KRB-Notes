@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { v4 as id } from 'uuid'
 import { setActiveNote } from '../general/generalSlice'
 import { selectNotesForFolder } from '../selectors'
-import { addDeletedNote, moveDeletedNoteByKey, removeDeletedNote } from '../deletedNotesList/deletedNotesSlice'
+import { addDeletedNote, removeDeletedNote } from '../deletedNotesList/deletedNotesSlice'
 import { setAmountNotesForFolder } from '../folderList/folderListSlice'
 
 const initialState = [

@@ -1,7 +1,5 @@
-import { Layout, ConfigProvider, theme, Divider, Row, Col, Typography } from 'antd'
-
+import { Layout, ConfigProvider, theme, Divider } from 'antd'
 import { useContext } from 'react'
-
 import { AuthContext } from './context/AuthContext'
 
 import Loader from './components/ui/Loader/Loader'
@@ -16,7 +14,9 @@ const App = () => {
 
   let { isLoading } = useContext(AuthContext)
 
-  if (isLoading) return <Loader />
+  if (isLoading) {
+    return <Loader />
+  }
 
   return (
     <ConfigProvider

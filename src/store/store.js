@@ -4,7 +4,6 @@ import folderListSlice from './folderList/folderListSlice'
 import notesListSlice from './notesList/notesListSlice'
 import deletedNotesSlice from './deletedNotesList/deletedNotesSlice'
 
-
 const store = configureStore({
   reducer: {
     folders: folderListSlice,
