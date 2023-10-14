@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { v4 as id } from 'uuid'
 import { setActiveNote } from '../general/generalSlice'
-import { selectNotesForFolder } from '../selectors'
 import { addDeletedNote, removeDeletedNote } from '../deletedNotesList/deletedNotesSlice'
 import { setAmountNotesForFolder } from '../folderList/folderListSlice'
 
@@ -85,13 +84,13 @@ export function removeNote({ id }) {
   return (dispatch, getState) => {
     const state = getState()
     const activeNoteId = state.general.activeNoteId
-    const notesForFolder = selectNotesForFolder(state)
-    const noteForDelete = notesForFolder.find(note => note.noteId === id)
+    const notes = state.notes
+    const noteForDelete = notes.find(note => note.noteId === id)
 
     const index = state.notes.findIndex(note => note.noteId === id)
 
     if (activeNoteId === id) {
-      const nonActiveNote = notesForFolder.find(note => note.noteId !== activeNoteId)
+      const nonActiveNote = notes.find(note => note.noteId !== activeNoteId)
       if (nonActiveNote) {
         dispatch(setActiveNote(nonActiveNote.noteId))
       }

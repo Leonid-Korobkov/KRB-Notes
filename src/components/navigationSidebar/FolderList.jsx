@@ -1,10 +1,12 @@
-import { Tree, Dropdown, Typography, Button } from 'antd'
-import { DeleteFilled, FolderFilled, DownOutlined, MoreOutlined, EditFilled } from '@ant-design/icons'
+import { Tree, Dropdown, Typography, Button, Modal } from 'antd'
+import { DeleteFilled, FolderFilled, DownOutlined, MoreOutlined, EditFilled, FolderAddOutlined } from '@ant-design/icons'
 const { DirectoryTree } = Tree
 const { Text } = Typography
 
 import { useDispatch, useSelector } from 'react-redux'
 import { setActiveFolder, setActiveNote } from '../../store/general/generalSlice'
+import { removeFolderAndNotes } from '../../store/folderList/folderListSlice'
+import { useState } from 'react'
 
 function FolderList() {
   const activeFolderKey = useSelector((state) => state.general.activeFolderKey)
@@ -33,29 +35,62 @@ function FolderList() {
       switcherIcon={<DownOutlined />}
       onSelect={onSelect}
       treeData={folders}
-      defaultSelectedKeys={[activeFolderKey]}
+      selectedKeys={activeFolderKey !== 'all' && activeFolderKey !== 'deletedNotes' ? [activeFolderKey] : null}
+      blockNode={true}
       // onRightClick={}
     />
   )
 }
 
 const FolderActionsMenu = () => {
-  const handleMenuClick = (e) => {
-    console.log('Clicked on menu item:', e.key)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const showModal = () => {
+    setIsModalOpen(true)
+  }
+  const handleOk = () => {
+    dispatch(removeFolderAndNotes({ folderKey: activeFolderKey }))
+    setIsModalOpen(false)
+  }
+  const handleCancel = () => {
+    setIsModalOpen(false)
+  }
+
+  const dispatch = useDispatch()
+  const activeFolderKey = useSelector((state) => state.general.activeFolderKey)
+
+  const handleMenuClick = ({ key }) => {
+    if (key === 'rename') {
+      // activeFolderKey == 'deletedNotes' ? dispatch(removeDeletedNote({ id: noteId })) : dispatch(removeNote({ id: noteId }))
+    } else if (key === 'move') {
+      // setIsModalOpen(true)
+    } else if (key === 'newFolder') {
+      // dispatch(recoverNote(note))
+    } else if (key === 'delete') {
+      showModal()
+      // dispatch(recoverNote(note))
+    }
+    // else if (key === 'pin') {
+    //   onPinNote(noteId)
+    // }
   }
 
   return (
-    <Dropdown
-      menu={{
-        items,
-        onClick: handleMenuClick
-      }}
-      trigger={['click']}
-    >
-      <Button type="text" size="small">
-        <MoreOutlined />
-      </Button>
-    </Dropdown>
+    <>
+      <Modal title="Вы уверены, что хотите удалить папку?" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <Text>Все заметки и все вложенные папки будут также удалены.</Text>
+      </Modal>
+      <Dropdown
+        menu={{
+          items,
+          onClick: handleMenuClick
+        }}
+        trigger={['click']}
+      >
+        <Button type="text" size="small">
+          <MoreOutlined />
+        </Button>
+      </Dropdown>
+    </>
   )
 }
 
@@ -87,7 +122,7 @@ const changeFoldersStructure = (folders) => {
 
 const items = [
   {
-    key: 'pin',
+    key: 'rename',
     label: <Text>Переименовать</Text>,
     icon: <EditFilled />
   },
@@ -95,6 +130,11 @@ const items = [
     key: 'move',
     label: <Text>Переместить</Text>,
     icon: <FolderFilled />
+  },
+  {
+    key: 'newFolder',
+    label: <Text>Новая папка</Text>,
+    icon: <FolderAddOutlined />
   },
   {
     type: 'divider'

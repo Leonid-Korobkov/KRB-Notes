@@ -1,5 +1,5 @@
 import { Layout, Divider, Row, Col, Button, Typography } from 'antd'
-import { DeleteFilled, FolderFilled } from '@ant-design/icons'
+import { DeleteFilled, FolderFilled, PlusOutlined } from '@ant-design/icons'
 
 import Login from '../Login'
 
@@ -8,6 +8,7 @@ import { useContext } from 'react'
 import { SidebarCollapsedContext } from '../../context/SidebarCollapsedContext'
 import { useDispatch, useSelector } from 'react-redux'
 import { setActiveFolder } from '../../store/general/generalSlice'
+import { addNewFolder } from '../../store/folderList/folderListSlice'
 
 const { Sider } = Layout
 
@@ -27,6 +28,10 @@ function NavigationSidebar() {
     dispatch(setActiveFolder('deletedNotes'))
   }
 
+  function handleNewFolderClick() {
+    dispatch(addNewFolder())
+  }
+
   return (
     <Sider style={{ overflow: 'auto' }} theme="light" width={200} trigger={null} collapsible collapsed={isCollapsed} collapsedWidth={0}>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -37,7 +42,6 @@ function NavigationSidebar() {
 
           <Row justify="center">
             <Col span={22}>
-              {/* type="primary"  */}
               <Button
                 type={activeFolderKey === 'all' ? 'primary' : 'default'}
                 block
@@ -48,10 +52,11 @@ function NavigationSidebar() {
                 Все заметки ({notesLength})
               </Button>
 
-              <Row>
-                <Text type="secondary" style={{ marginBottom: 5 }}>
-                  Папки
-                </Text>
+              <Row style={{ marginBottom: 5 }} align="middle" justify={'space-between'}>
+                <Text type="secondary">Папки</Text>
+                <Button type="text" size="small" onClick={handleNewFolderClick}>
+                  <PlusOutlined />
+                </Button>
               </Row>
               <FolderList />
             </Col>

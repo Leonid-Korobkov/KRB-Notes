@@ -82,7 +82,7 @@ const NoteItem = ({ note }) => {
     }
   }
 
-  const handleMenuClick = ({key}) => {
+  const handleMenuClick = ({ key }) => {
     if (key === 'delete') {
       activeFolderKey == 'deletedNotes' ? dispatch(removeDeletedNote({ id: noteId })) : dispatch(removeNote({ id: noteId }))
     } else if (key === 'move') {
@@ -104,6 +104,7 @@ const NoteItem = ({ note }) => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
+        <Text>(по умолчанию - Все заметки)</Text>
         <FolderListMove onSelect={onSelect} />
       </Modal>
       <Card
