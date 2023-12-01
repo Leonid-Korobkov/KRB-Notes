@@ -4,16 +4,22 @@ import { DoubleRightOutlined, DoubleLeftOutlined, PlusOutlined } from '@ant-desi
 import NoteList from './NoteList'
 import { SidebarCollapsedContext } from '../../context/SidebarCollapsedContext'
 
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addNewNote } from '../../store/notesList/notesListSlice'
+import { setActiveFolder } from '../../store/general/generalSlice'
 
 const { Sider } = Layout
 const { Search } = Input
 
 function NotesSidebar() {
   const { isCollapsed, setIsCollapsed } = useContext(SidebarCollapsedContext)
-  const onSearch = (value, _e, info) => console.log(info?.source, value)
+  const [searchValue, setSearchValue] = useState('')
+
+  const onSearch = (value) => {
+    setSearchValue(value)
+    dispatch(setActiveFolder('all'))
+  }
   const dispatch = useDispatch()
 
   function handleNewNoteClick() {
@@ -46,7 +52,7 @@ function NotesSidebar() {
         />
 
         <Search
-          placeholder="Поиск"
+          placeholder="Поиск заметок"
           allowClear
           onSearch={onSearch}
           style={{
@@ -58,7 +64,7 @@ function NotesSidebar() {
           <Button type="primary" shape="circle" icon={<PlusOutlined />} onClick={handleNewNoteClick} />
         </Tooltip>
       </div>
-      <NoteList></NoteList>
+      <NoteList searchValue={searchValue}></NoteList>
     </Sider>
   )
 }

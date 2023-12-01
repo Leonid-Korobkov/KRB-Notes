@@ -1,16 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { removeNote } from '../notesList/notesListSlice'
+import { v4 as id } from 'uuid'
 
 const initialState = [
-  { folderKey: '0-0', folderName: 'Важное', amountNotes: 2, nameSort: 'abc' },
+  { folderKey: '1', folderName: 'Тренировки', amountNotes: 3, nameSort: 'abc' },
   {
-    folderKey: '0-1',
+    folderKey: '2',
     folderName: 'Учеба',
     amountNotes: 1,
     childrenFolder: [
-      { folderKey: '0-1-0', folderName: 'Матан', amountNotes: 1 },
-      { folderKey: '0-1-1', folderName: 'Ин.яз', amountNotes: 0 },
-      { folderKey: '0-1-2', folderName: 'Физика', amountNotes: 0 }
+      { folderKey: '3', folderName: 'Матан', amountNotes: 0 },
+      { folderKey: '4', folderName: 'Ин.яз', amountNotes: 2 },
+      { folderKey: '5', folderName: 'Физика', amountNotes: 2 }
     ]
   }
 ]
@@ -27,15 +28,41 @@ const folderListSlice = createSlice({
         folderToUpdate.amountNotes += delta
       }
     },
-    addNewFolder(state) {
-      const lengthMainFolders = state.length
-      state.push({ folderKey: `0-${lengthMainFolders}`, folderName: 'Без названия', amountNotes: 0 })
+    renameFolder(state, action) {
+      const { folderKey, name } = action.payload
+      const folderToUpdate = findFolderByKey(state, folderKey)
+      folderToUpdate.folderName = name.trim() ? name.trim() : 'Без названия'
     },
-    // addNewSubFolder(state, action) {
-    //   const lengthMainFolders = state.length
-    //   state.push({ folderKey: `0-${lengthMainFolders}`, folderName: 'Без названия', amountNotes: 0 })
-    // },
-    setNameFolder(state, action) {},
+    addNewFolder(state, action) {
+      const nameFolder = action.payload.newFolderName.trim() ? action.payload.newFolderName.trim() : 'Без названия'
+      const folderId = id()
+      state.push({ folderKey: `${folderId}`, folderName: nameFolder, amountNotes: 0 })
+    },
+    moveFolder(state, action) {
+      const { folderKey, rootFolderKey } = action.payload
+      const folderToUpdate = findFolderByKey(state, folderKey)
+      const rootFolder = findFolderByKey(state, rootFolderKey)
+
+      if (!rootFolder.childrenFolder) {
+        rootFolder.childrenFolder = []
+      }
+      rootFolder.childrenFolder.push(folderToUpdate)
+    },
+    addNewSubFolder(state, action) {
+      const { folderKey, name } = action.payload
+      const rootFolder = findFolderByKey(state, folderKey)
+      const folderId = id()
+
+      if (!rootFolder.childrenFolder) {
+        rootFolder.childrenFolder = []
+      }
+
+      rootFolder.childrenFolder.push({
+        folderKey: `${folderId}`,
+        folderName: name.trim() ? name.trim() : 'Без названия',
+        amountNotes: 0
+      })
+    },
     deleteFolder(state, action) {
       const { folderKey } = action.payload // Получаем ключ папки для удаления
 
@@ -60,7 +87,6 @@ const folderListSlice = createSlice({
             }
           }
         }
-        console.log('folders', folders)
         return folders
       }
 
@@ -69,25 +95,28 @@ const folderListSlice = createSlice({
 
       return updatedState
     },
-    moveFolder(state, action) {}
+    addReadyFolder(state, action) {
+      const { rootFolderKey, folderToUpdate } = action.payload
+
+      const rootFolder = findFolderByKey(state, rootFolderKey)
+
+      if (!rootFolder.childrenFolder) {
+        rootFolder.childrenFolder = []
+      }
+      rootFolder.childrenFolder.push(folderToUpdate)
+    }
   }
 })
 
-// Добавьте эту функцию в ваш slice
 export function deleteNotesInFolderAndSubfolders(folder, dispatch, getState) {
-  // console.log(folder)
-  const { folderKey  } = folder
+  const { folderKey } = folder
   const childrenFolder = findFolderByKey(getState().folders, folderKey).childrenFolder
-  // console.log(folder, childrenFolder)
 
-  // Найдите и удалите заметки с folderKey
   const notes = getState().notes.filter(note => note.folderKey === folderKey)
   for (const note of notes) {
-    // console.log(note)
     dispatch(removeNote({ id: note.noteId }))
   }
 
-  // Рекурсивно удалите заметки в подпапках
   if (childrenFolder) {
     for (const subfolder of childrenFolder) {
       deleteNotesInFolderAndSubfolders(subfolder, dispatch, getState)
@@ -95,13 +124,9 @@ export function deleteNotesInFolderAndSubfolders(folder, dispatch, getState) {
   }
 }
 
-// В вашей функции removeFolderAndNotes
 export function removeFolderAndNotes(action) {
   return (dispatch, getState) => {
-    // Удалите заметки в текущей папке и ее подпапках
     deleteNotesInFolderAndSubfolders(action, dispatch, getState)
-
-    // Затем удалите папку
     dispatch(deleteFolder(action))
   }
 }
@@ -123,6 +148,24 @@ export function findFolderByKey(folders, folderKey) {
   return null
 }
 
-export const { setAmountNotesForFolder, addNewFolder, deleteFolder } = folderListSlice.actions
+export function moveAndDeleteFolders(action) {
+  return (dispatch, getState) => {
+    const state = getState()
+    const { folderKey, rootFolderKey } = action
+    const folderToUpdate = findFolderByKey(state.folders, folderKey)
+    dispatch(deleteFolder(action))
+    dispatch(addReadyFolder({ rootFolderKey, folderToUpdate }))
+  }
+}
+
+export const {
+  setAmountNotesForFolder,
+  addNewFolder,
+  deleteFolder,
+  renameFolder,
+  addNewSubFolder,
+  moveFolder,
+  addReadyFolder
+} = folderListSlice.actions
 
 export default folderListSlice.reducer

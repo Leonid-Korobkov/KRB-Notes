@@ -1,10 +1,10 @@
-import { Layout, Divider, Row, Col, Button, Typography } from 'antd'
+import { Layout, Divider, Row, Col, Button, Typography, Modal, Input } from 'antd'
 import { DeleteFilled, FolderFilled, PlusOutlined } from '@ant-design/icons'
 
 import Login from '../Login'
 
 import FolderList from './FolderList'
-import { useContext } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { SidebarCollapsedContext } from '../../context/SidebarCollapsedContext'
 import { useDispatch, useSelector } from 'react-redux'
 import { setActiveFolder } from '../../store/general/generalSlice'
@@ -20,6 +20,12 @@ function NavigationSidebar() {
   const activeFolderKey = useSelector((state) => state.general.activeFolderKey)
   const notesLength = useSelector((state) => state.notes).length
 
+  const [isModalFolderOpen, setIsModalFolderOpen] = useState(false)
+
+  const inputNameFolderRef = useRef(null)
+  const [inputNameFolderValue, setInputNameFolderValue] = useState('')
+  // const [inputNameFolder, setInputNameFolder] = useState(true)
+
   function handleAllNotesClick() {
     dispatch(setActiveFolder('all'))
   }
@@ -29,11 +35,30 @@ function NavigationSidebar() {
   }
 
   function handleNewFolderClick() {
-    dispatch(addNewFolder())
+    setIsModalFolderOpen(true)
+  }
+
+  useEffect(() => {
+    if (isModalFolderOpen && inputNameFolderRef.current) {
+      inputNameFolderRef.current.focus({
+        cursor: 'all'
+      })
+    }
+  }, [isModalFolderOpen])
+
+  function handleModalOk() {
+    dispatch(addNewFolder({ newFolderName: inputNameFolderRef.current.input.value }))
+    setInputNameFolderValue('')
+    setIsModalFolderOpen(false)
+  }
+
+  function handleModalCancel() {
+    setInputNameFolderValue('')
+    setIsModalFolderOpen(false)
   }
 
   return (
-    <Sider style={{ overflow: 'auto' }} theme="light" width={200} trigger={null} collapsible collapsed={isCollapsed} collapsedWidth={0}>
+    <Sider style={{ overflow: 'auto' }} theme="light" width={220} trigger={null} collapsible collapsed={isCollapsed} collapsedWidth={0}>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <div style={{ flexGrow: 1 }}>
           <Login />
@@ -57,6 +82,22 @@ function NavigationSidebar() {
                 <Button type="text" size="small" onClick={handleNewFolderClick}>
                   <PlusOutlined />
                 </Button>
+                <Modal
+                  title="Введите название папки"
+                  open={isModalFolderOpen}
+                  onOk={handleModalOk}
+                  onCancel={handleModalCancel}
+                  footer={[
+                    <Button key="back" onClick={handleModalCancel}>
+                      Отменить
+                    </Button>,
+                    <Button key="ok" type="primary" onClick={handleModalOk}>
+                      Ок
+                    </Button>
+                  ]}
+                >
+                  <Input ref={inputNameFolderRef} placeholder="Без названия" allowClear value={inputNameFolderValue} onChange={(e) => setInputNameFolderValue(e.target.value)}/>
+                </Modal>
               </Row>
               <FolderList />
             </Col>

@@ -5,10 +5,14 @@ import { addDeletedNote, removeDeletedNote } from '../deletedNotesList/deletedNo
 import { setAmountNotesForFolder } from '../folderList/folderListSlice'
 
 const initialState = [
-  { noteId: 1, folderKey: '0-0', title: 'Заметка 1', content: 'Содержание заметки 1', lastDateEdited: Date.now(), isPin: true },
-  { noteId: 2, folderKey: '0-0', title: 'Заметка 2', content: 'Содержание заметки 2', lastDateEdited: Date.now() },
-  { noteId: 3, folderKey: '0-1', title: 'Заметка 3', content: 'Содержание заметки 3', lastDateEdited: Date.now() },
-  { noteId: 4, folderKey: '0-1-0', title: 'Заметка 4', content: 'Содержание заметки 4', lastDateEdited: Date.now() }
+  { noteId: 1, folderKey: '1', title: 'Заметка 1', content: 'Содержание заметки 1', lastDateEdited: Date.now(), isPinned: true },
+  { noteId: 23, folderKey: '1', title: 'Заметка 23', content: 'Содержание заметки 23', lastDateEdited: Date.now(), isPinned: true },
+  { noteId: 2, folderKey: '1', title: 'Заметка 2', content: 'Содержание заметки 2', lastDateEdited: Date.now(), isPinned: false },
+  { noteId: 3, folderKey: '2', title: 'Заметка 3', content: 'Содержание заметки 3', lastDateEdited: Date.now(), isPinned: false },
+  { noteId: 4, folderKey: '4', title: 'Заметка 4', content: 'Содержание заметки 4', lastDateEdited: Date.now(), isPinned: false },
+  { noteId: 5, folderKey: '4', title: 'Заметка 5', content: 'Содержание заметки 5', lastDateEdited: Date.now(), isPinned: true },
+  { noteId: 6, folderKey: '5', title: 'Заметка 6', content: 'Содержание заметки 6', lastDateEdited: Date.now(), isPinned: false },
+  { noteId: 7, folderKey: '5', title: 'Заметка 7', content: 'Содержание заметки 7', lastDateEdited: Date.now(), isPinned: false }
 ]
 
 const notesListSlice = createSlice({
@@ -39,6 +43,10 @@ const notesListSlice = createSlice({
     moveNoteByKey(state, action) {
       const index = state.findIndex(note => note.noteId === action.payload.id)
       state[index].folderKey = action.payload.folderKey
+    },
+    pinNote(state, action) {
+      const note = state.find(note => note.noteId === action.payload.id)
+      note.isPinned = action.payload.isPinned
     }
   }
 })
@@ -102,6 +110,14 @@ export function removeNote({ id }) {
   }
 }
 
-export const { editNoteTitle, editNoteContent, createNewNote, deleteNoteFromNotes, addReadyNote, moveNoteByKey } = notesListSlice.actions
+export const {
+  editNoteTitle,
+  editNoteContent,
+  createNewNote,
+  deleteNoteFromNotes,
+  addReadyNote,
+  moveNoteByKey,
+  pinNote
+} = notesListSlice.actions
 
 export default notesListSlice.reducer

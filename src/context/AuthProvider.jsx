@@ -4,7 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { useEffect, useState } from 'react'
 import { AuthContext } from './AuthContext.js'
 
-// eslint-disable-next-line react/prop-types
+//
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
