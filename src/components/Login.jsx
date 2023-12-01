@@ -41,7 +41,7 @@ function Login() {
   function alertErrorMessageAuth() {
     messageApi.open({
       type: 'error',
-      content: `Произошла ошибка. Попробуйте снова`
+      content: `Произошла ошибка. Попробуйте войти еще раз`
     })
   }
 

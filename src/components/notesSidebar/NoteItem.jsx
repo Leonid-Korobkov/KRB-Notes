@@ -7,7 +7,7 @@ import FolderListMove from '../navigationSidebar/FolderListMove'
 import { useRef, useState } from 'react'
 import { setActiveNote } from '../../store/general/generalSlice'
 import { formatDateTime } from '../../utils/convertDate'
-import { moveNote, recoverNote, removeNote } from '../../store/notesList/notesListSlice'
+import { moveNote, pinNote, recoverNote, removeNote } from '../../store/notesList/notesListSlice'
 import { removeDeletedNote } from '../../store/deletedNotesList/deletedNotesSlice'
 
 const { Text, Paragraph, Title } = Typography
@@ -16,6 +16,28 @@ const items = [
   {
     key: 'pin',
     label: <Text>Закрепить</Text>,
+    icon: <PushpinFilled />
+  },
+  {
+    key: 'move',
+    label: <Text>Переместить</Text>,
+    icon: <FolderFilled />
+  },
+  {
+    type: 'divider'
+  },
+  {
+    key: 'delete',
+    label: <Text>Удалить</Text>,
+    danger: true,
+    icon: <DeleteFilled />
+  }
+]
+
+const itemsForUnpinnedNotes = [
+  {
+    key: 'unpin',
+    label: <Text>Открепить</Text>,
     icon: <PushpinFilled />
   },
   {
@@ -60,7 +82,7 @@ const NoteItem = ({ note }) => {
   const refDropdownDots = useRef(null)
   const [selectedFolderKey, setSelectedFolderKey] = useState(null)
 
-  const { noteId, title, lastDateEdited, content } = note
+  const { noteId, title, lastDateEdited, content, isPinned } = note
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -82,18 +104,20 @@ const NoteItem = ({ note }) => {
     }
   }
 
-  const handleMenuClick = ({key}) => {
+  const handleMenuClick = ({ key }) => {
     if (key === 'delete') {
       activeFolderKey == 'deletedNotes' ? dispatch(removeDeletedNote({ id: noteId })) : dispatch(removeNote({ id: noteId }))
     } else if (key === 'move') {
       setIsModalOpen(true)
     } else if (key === 'recover') {
       dispatch(recoverNote(note))
+    } else if (key === 'pin') {
+      dispatch(pinNote({ id: noteId, isPinned: true }))
+    } else if (key === 'unpin') {
+      dispatch(pinNote({ id: noteId, isPinned: false }))
     }
-    // else if (key === 'pin') {
-    //   onPinNote(noteId)
-    // }
   }
+  
 
   return (
     <List.Item style={{ padding: 10 }}>
@@ -103,7 +127,16 @@ const NoteItem = ({ note }) => {
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Отменить
+          </Button>,
+          <Button key="ok" type="primary" onClick={handleOk}>
+            Ок
+          </Button>
+        ]}
       >
+        <Text>(по умолчанию - Все заметки)</Text>
         <FolderListMove onSelect={onSelect} />
       </Modal>
       <Card
@@ -120,7 +153,7 @@ const NoteItem = ({ note }) => {
           <Col>
             <Dropdown
               menu={{
-                items: activeFolderKey == 'deletedNotes' ? itemsForDeletedNotes : items,
+                items: activeFolderKey == 'deletedNotes' ? itemsForDeletedNotes : isPinned ? itemsForUnpinnedNotes : items,
                 onClick: handleMenuClick
               }}
               trigger={['click']}
