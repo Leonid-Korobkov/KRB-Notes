@@ -15,14 +15,15 @@ function FolderListMove({ onSelect, isMoveFolder = false }) {
 
   const notesLength = useSelector((state) => state.notes).length
   const [isActiveBtnAll, setIsActiveBtnAll] = useState(true)
-  const [selectedFolderKey, setSelectedFolderKey] = useState('')
+  const [selectedFolderKey, setSelectedFolderKey] = useState(['all'])
 
   function handleAllNotesClick() {
     setIsActiveBtnAll(true)
-    onSelect('all')
+    onSelect(['all'])
   }
 
   function onSelectFolder(key) {
+    console.log(key)
     setSelectedFolderKey(key)
     onSelect(key)
     setIsActiveBtnAll(false)

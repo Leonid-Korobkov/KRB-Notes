@@ -97,9 +97,14 @@ const folderListSlice = createSlice({
     },
     addReadyFolder(state, action) {
       const { rootFolderKey, folderToUpdate } = action.payload
+      console.log(rootFolderKey, folderToUpdate)
+
+      if (rootFolderKey == 'all') {
+        state.push(folderToUpdate)
+        return
+      }
 
       const rootFolder = findFolderByKey(state, rootFolderKey)
-
       if (!rootFolder.childrenFolder) {
         rootFolder.childrenFolder = []
       }
@@ -150,6 +155,7 @@ export function findFolderByKey(folders, folderKey) {
 
 export function moveAndDeleteFolders(action) {
   return (dispatch, getState) => {
+    console.log(action)
     const state = getState()
     const { folderKey, rootFolderKey } = action
     const folderToUpdate = findFolderByKey(state.folders, folderKey)

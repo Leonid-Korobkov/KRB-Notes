@@ -49,7 +49,7 @@ const FolderActionsMenu = () => {
   const [isModalSubFolderOpen, setIsModalSubFolderOpen] = useState(false)
   const [isModalMoveFolderOpen, setIsModalMoveFolderOpen] = useState(false)
 
-  const [selectedFolderKey, setSelectedFolderKey] = useState(null)
+  const [selectedFolderKey, setSelectedFolderKey] = useState('all')
 
   const dispatch = useDispatch()
   const activeFolderKey = useSelector((state) => state.general.activeFolderKey)
@@ -106,6 +106,7 @@ const FolderActionsMenu = () => {
     setIsModalMoveFolderOpen(false)
   }
   function onSelectFolder(key) {
+    console.log(key)
     setSelectedFolderKey(key[0])
   }
 
