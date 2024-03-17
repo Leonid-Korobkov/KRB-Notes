@@ -80,20 +80,22 @@ const NoteContent = () => {
 
   useEffect(() => {
     // Проверяем, отличается ли новое значение заголовка от предыдущего
-    if (debouncedTitle !== note.title) {
+    if (note && debouncedTitle !== note.title) {
       dispatch(editNoteTitle({content: noteState.title, id: noteId}))
     }
   }, [debouncedTitle])
 
   useEffect(() => {
     // Проверяем, отличается ли новое значение контента от предыдущего
-    if (debouncedContent !== note.content) {
+    if (note && debouncedContent !== note.content) {
       dispatch(editNoteContent({content: noteState.content, id: noteId}))
     }
   }, [debouncedContent])
 
   useEffect(() => {
-    setNoteState(note)
+    if (note) {
+      setNoteState(note)
+    }
   }, [note]);
 
   if (!note) return
