@@ -52,35 +52,58 @@
 // }
 
 // export default NoteContent
-import { Layout, Row, Col, Input, Typography, Modal } from 'antd'
-import { useDispatch, useSelector } from 'react-redux'
-import { editNoteContent, editNoteTitle, recoverNote } from '../../store/notesList/notesListSlice'
+import {Col, Input, Layout, Modal, Row, Typography} from 'antd'
+import {useDispatch, useSelector} from 'react-redux'
+import {editNoteContent, editNoteTitle, recoverNote} from '../../store/notesList/notesListSlice'
 
 import TextArea from 'antd/es/input/TextArea'
-import { formatDate } from '../../utils/convertDate'
-import { selectActiveNote } from '../../store/selectors'
-import { useState } from 'react'
+import {formatDate} from '../../utils/convertDate'
+import {selectActiveNote} from '../../store/selectors'
+import {useEffect, useState} from 'react'
+import {useDebounce} from "../../hooks/useDebounce.js";
 
-const { Content } = Layout
-const { Text } = Typography
+const {Content} = Layout
+const {Text} = Typography
 
 const NoteContent = () => {
   const note = useSelector(selectActiveNote)
+  const [noteState, setNoteState] = useState(note)
   const activeFolderKey = useSelector((state) => state.general.activeFolderKey)
 
   const dispatch = useDispatch()
 
   const [modalErrorOpen, setModalErrorOpen] = useState(false)
 
-  if (!note) return
+  // Используем debounce только для пользовательского ввода
+  const debouncedTitle = useDebounce(noteState.title, 500)
+  const debouncedContent = useDebounce(noteState.content, 500)
 
-  const { title, content, lastDateEdited, noteId } = note
+  useEffect(() => {
+    // Проверяем, отличается ли новое значение заголовка от предыдущего
+    if (debouncedTitle !== note.title) {
+      dispatch(editNoteTitle({content: noteState.title, id: noteId}))
+    }
+  }, [debouncedTitle])
+
+  useEffect(() => {
+    // Проверяем, отличается ли новое значение контента от предыдущего
+    if (debouncedContent !== note.content) {
+      dispatch(editNoteContent({content: noteState.content, id: noteId}))
+    }
+  }, [debouncedContent])
+
+  useEffect(() => {
+    setNoteState(note)
+  }, [note]);
+
+  if (!note) return
+  const {title, content, lastDateEdited, noteId} = noteState
 
   function handleTitleChange(e) {
     if (activeFolderKey == 'deletedNotes') {
       setModalErrorOpen(true)
     } else {
-      dispatch(editNoteTitle({ content: e.target.value, id: noteId }))
+      setNoteState({...noteState, title: e.target.value})
     }
   }
 
@@ -88,9 +111,10 @@ const NoteContent = () => {
     if (activeFolderKey == 'deletedNotes') {
       setModalErrorOpen(true)
     } else {
-      dispatch(editNoteContent({ content: e.target.value, id: noteId }))
+      setNoteState({...noteState, content: e.target.value})
     }
   }
+
 
   function confirmModal(note) {
     dispatch(recoverNote(note))
@@ -102,9 +126,9 @@ const NoteContent = () => {
   }
 
   return (
-    <Content style={{ overflow: 'auto', padding: '20px', maxWidth: 800, margin: '0px auto' }}>
-      <Row justify="center" style={{ width: '100%', height: '100%' }}>
-        <Col span={24} style={{ width: '100%', height: '100%' }}>
+    <Content style={{overflow: 'auto', padding: '20px', maxWidth: 800, margin: '0px auto'}}>
+      <Row justify="center" style={{width: '100%', height: '100%'}}>
+        <Col span={24} style={{width: '100%', height: '100%'}}>
           <Modal
             title="Удаленную заметку нельзя редактировать"
             centered
@@ -116,11 +140,12 @@ const NoteContent = () => {
           >
             <Text>Может вы хотите восстановить заметку?</Text>
           </Modal>
-          <Text style={{ display: 'block', marginBottom: 20, textAlign: 'center' }} type="secondary">
+          <Text style={{display: 'block', marginBottom: 20, textAlign: 'center'}} type="secondary">
             {formatDate(lastDateEdited)}
           </Text>
-          <Input style={{ marginBottom: 20 }} placeholder="Название заметки" value={title} onChange={handleTitleChange} />
-          <TextArea autoSize value={content} onChange={handleContentChange} />
+          <Input style={{marginBottom: 20}} placeholder="Название заметки" value={title}
+                 onChange={handleTitleChange}/>
+          <TextArea autoSize value={content} onChange={handleContentChange}/>
         </Col>
       </Row>
     </Content>
