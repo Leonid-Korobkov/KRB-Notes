@@ -1,19 +1,20 @@
-import { Layout, Button, Input, Tooltip } from 'antd'
-import { DoubleRightOutlined, DoubleLeftOutlined, PlusOutlined } from '@ant-design/icons'
+import {Button, Input, Layout, Tooltip} from 'antd'
+import {DoubleLeftOutlined, DoubleRightOutlined, PlusOutlined} from '@ant-design/icons'
 
 import NoteList from './NoteList'
-import { SidebarCollapsedContext } from '../../context/SidebarCollapsedContext'
+import {SidebarCollapsedContext} from '../../context/SidebarCollapsedContext'
 
-import { useContext, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { addNewNote } from '../../store/notesList/notesListSlice'
-import { setActiveFolder } from '../../store/general/generalSlice'
+import {useContext, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import {addNewNote} from '../../store/notesList/notesListSlice'
+import {setActiveFolder} from '../../store/general/generalSlice'
 
-const { Sider } = Layout
-const { Search } = Input
+const {Sider} = Layout
+const {Search} = Input
 
 function NotesSidebar() {
-  const { isCollapsed, setIsCollapsed } = useContext(SidebarCollapsedContext)
+  const activeFolderKey = useSelector((state) => state.general.activeFolderKey)
+  const {isCollapsed, setIsCollapsed} = useContext(SidebarCollapsedContext)
   const [searchValue, setSearchValue] = useState('')
 
   const onSearch = (value) => {
@@ -27,7 +28,7 @@ function NotesSidebar() {
   }
 
   return (
-    <Sider style={{ overflow: 'auto' }} theme="light" width={300}>
+    <Sider style={{overflow: 'auto'}} theme="light" width={300}>
       <div
         style={{
           display: 'flex',
@@ -42,7 +43,7 @@ function NotesSidebar() {
       >
         <Button
           type="text"
-          icon={isCollapsed ? <DoubleRightOutlined /> : <DoubleLeftOutlined />}
+          icon={isCollapsed ? <DoubleRightOutlined/> : <DoubleLeftOutlined/>}
           onClick={() => setIsCollapsed(!isCollapsed)}
           style={{
             fontSize: '16px',
@@ -61,7 +62,8 @@ function NotesSidebar() {
         />
 
         <Tooltip title="Добавить заметку">
-          <Button type="primary" shape="circle" icon={<PlusOutlined />} onClick={handleNewNoteClick} />
+          <Button disabled={activeFolderKey == 'deletedNotes'} type="primary" shape="circle" icon={<PlusOutlined/>}
+                  onClick={handleNewNoteClick}/>
         </Tooltip>
       </div>
       <NoteList searchValue={searchValue}></NoteList>

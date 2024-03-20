@@ -1,11 +1,11 @@
-import { Empty, List, Typography } from 'antd'
+import {Empty, List, Typography} from 'antd'
 import NoteItem from './NoteItem'
-import { useSelector } from 'react-redux'
-import { selectNotesForFolder } from '../../store/selectors'
+import {useSelector} from 'react-redux'
+import {selectNotesForFolder} from '../../store/selectors'
 
-const { Title } = Typography
+const {Title} = Typography
 
-const NoteList = ({ searchValue = '' }) => {
+const NoteList = ({searchValue = ''}) => {
   let notes = useSelector(selectNotesForFolder)
 
   if (searchValue.trim() !== '')
@@ -22,26 +22,26 @@ const NoteList = ({ searchValue = '' }) => {
     <>
       {pinnedNotes.length > 0 && (
         <>
-          <Title level={2} type="secondary" style={{ margin: 10 }}>
+          <Title level={2} type="secondary" style={{margin: 10}}>
             Закрепленные
           </Title>
           <List
             locale={{
-              emptyText: <Empty description={<span>Закрепленных заметок нет</span>} />
+              emptyText: <Empty description={<span>Закрепленных заметок нет</span>}/>
             }}
             dataSource={pinnedNotes}
-            renderItem={(note) => <NoteItem note={note} />}
-            style={{ marginBottom: 20, paddingBottom: 20, borderBottom: '2px solid rgba(255, 255, 255, 0.45)' }}
+            renderItem={(note) => <NoteItem note={note}/>}
+            style={{marginBottom: 20, paddingBottom: 20, borderBottom: '2px solid rgba(255, 255, 255, 0.45)'}}
           />
         </>
       )}
 
       <List
         locale={{
-          emptyText: <Empty description={<span>Тут пусто</span>} />
+          emptyText: <Empty description={<span>Заметок нет</span>}/>
         }}
         dataSource={unpinnedNotes}
-        renderItem={(note) => <NoteItem note={note} />}
+        renderItem={(note) => <NoteItem note={note}/>}
       />
     </>
   )

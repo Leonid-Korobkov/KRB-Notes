@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit'
+import {createSlice} from '@reduxjs/toolkit'
 
-const initialState = { activeFolderKey: '0-0', activeNoteId: 1, darkMode: true }
+const initialState = {activeFolderKey: null, activeNoteId: null, darkMode: true}
 
 const generalSlice = createSlice({
   name: 'general',
@@ -21,6 +21,6 @@ const generalSlice = createSlice({
   }
 })
 
-export const { setActiveNote, setActiveFolder, setStatusLoading, setDarkMode } = generalSlice.actions
+export const {setActiveNote, setActiveFolder, setStatusLoading, setDarkMode} = generalSlice.actions
 
 export default generalSlice.reducer

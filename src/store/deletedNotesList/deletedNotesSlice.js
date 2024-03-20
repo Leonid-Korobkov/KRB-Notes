@@ -1,21 +1,22 @@
 import {createSlice} from '@reduxjs/toolkit'
 
-const initialState = [
-  {
-    noteId: 111,
-    folderKey: 'deletedNotes',
-    title: 'Удаленная Заметка 1',
-    content: 'Содержание заметки 1',
-    lastDateEdited: Date.now()
-  },
-  {
-    noteId: 112,
-    folderKey: 'deletedNotes',
-    title: 'Удаленная Заметка 2',
-    content: 'Содержание заметки 2',
-    lastDateEdited: Date.now()
-  }
-]
+// const initialState = [
+//   {
+//     noteId: 111,
+//     folderKey: 'deletedNotes',
+//     title: 'Удаленная Заметка 1',
+//     content: 'Содержание заметки 1',
+//     lastDateEdited: Date.now()
+//   },
+//   {
+//     noteId: 112,
+//     folderKey: 'deletedNotes',
+//     title: 'Удаленная Заметка 2',
+//     content: 'Содержание заметки 2',
+//     lastDateEdited: Date.now()
+//   }
+// ]
+const initialState = []
 
 const deletedNotesSlice = createSlice({
   name: 'deletedNotes',

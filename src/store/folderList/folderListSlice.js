@@ -1,27 +1,28 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { removeNote } from '../notesList/notesListSlice'
-import { v4 as id } from 'uuid'
+import {createSlice} from '@reduxjs/toolkit'
+import {removeNote} from '../notesList/notesListSlice'
+import {v4 as id} from 'uuid'
 
-const initialState = [
-  { folderKey: '1', folderName: 'Тренировки', amountNotes: 3, nameSort: 'abc' },
-  {
-    folderKey: '2',
-    folderName: 'Учеба',
-    amountNotes: 1,
-    childrenFolder: [
-      { folderKey: '3', folderName: 'Матан', amountNotes: 0 },
-      { folderKey: '4', folderName: 'Ин.яз', amountNotes: 2 },
-      { folderKey: '5', folderName: 'Физика', amountNotes: 2 }
-    ]
-  }
-]
+// const initialState = [
+//   { folderKey: '1', folderName: 'Тренировки', amountNotes: 3, nameSort: 'abc' },
+//   {
+//     folderKey: '2',
+//     folderName: 'Учеба',
+//     amountNotes: 1,
+//     childrenFolder: [
+//       { folderKey: '3', folderName: 'Матан', amountNotes: 0 },
+//       { folderKey: '4', folderName: 'Ин.яз', amountNotes: 2 },
+//       { folderKey: '5', folderName: 'Физика', amountNotes: 2 }
+//     ]
+//   }
+// ]
+const initialState = []
 
 const folderListSlice = createSlice({
   name: 'folders',
   initialState,
   reducers: {
     setAmountNotesForFolder(state, action) {
-      const { folderKey, delta } = action.payload
+      const {folderKey, delta} = action.payload
       const folderToUpdate = findFolderByKey(state, folderKey)
 
       if (folderToUpdate) {
@@ -29,17 +30,17 @@ const folderListSlice = createSlice({
       }
     },
     renameFolder(state, action) {
-      const { folderKey, name } = action.payload
+      const {folderKey, name} = action.payload
       const folderToUpdate = findFolderByKey(state, folderKey)
       folderToUpdate.folderName = name.trim() ? name.trim() : 'Без названия'
     },
     addNewFolder(state, action) {
       const nameFolder = action.payload.newFolderName.trim() ? action.payload.newFolderName.trim() : 'Без названия'
       const folderId = id()
-      state.push({ folderKey: `${folderId}`, folderName: nameFolder, amountNotes: 0 })
+      state.push({folderKey: `${folderId}`, folderName: nameFolder, amountNotes: 0})
     },
     moveFolder(state, action) {
-      const { folderKey, rootFolderKey } = action.payload
+      const {folderKey, rootFolderKey} = action.payload
       const folderToUpdate = findFolderByKey(state, folderKey)
       const rootFolder = findFolderByKey(state, rootFolderKey)
 
@@ -49,7 +50,7 @@ const folderListSlice = createSlice({
       rootFolder.childrenFolder.push(folderToUpdate)
     },
     addNewSubFolder(state, action) {
-      const { folderKey, name } = action.payload
+      const {folderKey, name} = action.payload
       const rootFolder = findFolderByKey(state, folderKey)
       const folderId = id()
 
@@ -64,7 +65,7 @@ const folderListSlice = createSlice({
       })
     },
     deleteFolder(state, action) {
-      const { folderKey } = action.payload // Получаем ключ папки для удаления
+      const {folderKey} = action.payload // Получаем ключ папки для удаления
 
       // Функция для удаления папки из массива
       function removeFolder(folders, key) {
@@ -83,7 +84,7 @@ const folderListSlice = createSlice({
             const updatedChildren = deleteFolderRecursively(folders[i].childrenFolder)
             if (updatedChildren.length !== folders[i].childrenFolder.length) {
               // Если была удалена папка внутри childrenFolder, обновляем текущую папку
-              folders[i] = { ...folders[i], childrenFolder: updatedChildren }
+              folders[i] = {...folders[i], childrenFolder: updatedChildren}
             }
           }
         }
@@ -96,7 +97,7 @@ const folderListSlice = createSlice({
       return updatedState
     },
     addReadyFolder(state, action) {
-      const { rootFolderKey, folderToUpdate } = action.payload
+      const {rootFolderKey, folderToUpdate} = action.payload
       console.log(rootFolderKey, folderToUpdate)
 
       if (rootFolderKey == 'all') {
@@ -114,12 +115,12 @@ const folderListSlice = createSlice({
 })
 
 export function deleteNotesInFolderAndSubfolders(folder, dispatch, getState) {
-  const { folderKey } = folder
+  const {folderKey} = folder
   const childrenFolder = findFolderByKey(getState().folders, folderKey).childrenFolder
 
   const notes = getState().notes.filter(note => note.folderKey === folderKey)
   for (const note of notes) {
-    dispatch(removeNote({ id: note.noteId }))
+    dispatch(removeNote({id: note.noteId}))
   }
 
   if (childrenFolder) {
@@ -157,10 +158,10 @@ export function moveAndDeleteFolders(action) {
   return (dispatch, getState) => {
     console.log(action)
     const state = getState()
-    const { folderKey, rootFolderKey } = action
+    const {folderKey, rootFolderKey} = action
     const folderToUpdate = findFolderByKey(state.folders, folderKey)
     dispatch(deleteFolder(action))
-    dispatch(addReadyFolder({ rootFolderKey, folderToUpdate }))
+    dispatch(addReadyFolder({rootFolderKey, folderToUpdate}))
   }
 }
 

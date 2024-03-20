@@ -75,8 +75,8 @@ const NoteContent = () => {
   const [modalErrorOpen, setModalErrorOpen] = useState(false)
 
   // Используем debounce только для пользовательского ввода
-  const debouncedTitle = useDebounce(noteState.title, 500)
-  const debouncedContent = useDebounce(noteState.content, 500)
+  const debouncedTitle = useDebounce(noteState?.title, 500)
+  const debouncedContent = useDebounce(noteState?.content, 500)
 
   useEffect(() => {
     // Проверяем, отличается ли новое значение заголовка от предыдущего
@@ -98,7 +98,8 @@ const NoteContent = () => {
     }
   }, [note]);
 
-  if (!note) return
+  if (!note || !noteState) return
+
   const {title, content, lastDateEdited, noteId} = noteState
 
   function handleTitleChange(e) {
@@ -116,7 +117,6 @@ const NoteContent = () => {
       setNoteState({...noteState, content: e.target.value})
     }
   }
-
 
   function confirmModal(note) {
     dispatch(recoverNote(note))

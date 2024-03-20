@@ -4,85 +4,84 @@ import {setActiveNote} from '../general/generalSlice'
 import {addDeletedNote, removeDeletedNote} from '../deletedNotesList/deletedNotesSlice'
 import {setAmountNotesForFolder} from '../folderList/folderListSlice'
 
-const initialState = [
-  {
-    noteId: 1,
-    folderKey: '1',
-    title: 'Заметка 1',
-    content: 'Содержание заметки 1',
-    lastDateEdited: Date.now(),
-    isPinned: true
-  },
-  {
-    noteId: 23,
-    folderKey: '1',
-    title: 'Заметка 23',
-    content: 'Содержание заметки 23',
-    lastDateEdited: Date.now(),
-    isPinned: true
-  },
-  {
-    noteId: 2,
-    folderKey: '1',
-    title: 'Заметка 2',
-    content: 'Содержание заметки 2',
-    lastDateEdited: Date.now(),
-    isPinned: false
-  },
-  {
-    noteId: 3,
-    folderKey: '2',
-    title: 'Заметка 3',
-    content: 'Содержание заметки 3',
-    lastDateEdited: Date.now(),
-    isPinned: false
-  },
-  {
-    noteId: 4,
-    folderKey: '4',
-    title: 'Заметка 4',
-    content: 'Содержание заметки 4',
-    lastDateEdited: Date.now(),
-    isPinned: false
-  },
-  {
-    noteId: 5,
-    folderKey: '4',
-    title: 'Заметка 5',
-    content: 'Содержание заметки 5',
-    lastDateEdited: Date.now(),
-    isPinned: true
-  },
-  {
-    noteId: 6,
-    folderKey: '5',
-    title: 'Заметка 6',
-    content: 'Содержание заметки 6',
-    lastDateEdited: Date.now(),
-    isPinned: false
-  },
-  {
-    noteId: 7,
-    folderKey: '5',
-    title: 'Заметка 7',
-    content: 'Содержание заметки 7',
-    lastDateEdited: Date.now(),
-    isPinned: false
-  }
-]
+// const initialState = [
+//   {
+//     noteId: 1,
+//     folderKey: '1',
+//     title: 'Заметка 1',
+//     content: 'Содержание заметки 1',
+//     lastDateEdited: Date.now(),
+//     isPinned: true
+//   },
+//   {
+//     noteId: 23,
+//     folderKey: '1',
+//     title: 'Заметка 23',
+//     content: 'Содержание заметки 23',
+//     lastDateEdited: Date.now(),
+//     isPinned: true
+//   },
+//   {
+//     noteId: 2,
+//     folderKey: '1',
+//     title: 'Заметка 2',
+//     content: 'Содержание заметки 2',
+//     lastDateEdited: Date.now(),
+//     isPinned: false
+//   },
+//   {
+//     noteId: 3,
+//     folderKey: '2',
+//     title: 'Заметка 3',
+//     content: 'Содержание заметки 3',
+//     lastDateEdited: Date.now(),
+//     isPinned: false
+//   },
+//   {
+//     noteId: 4,
+//     folderKey: '4',
+//     title: 'Заметка 4',
+//     content: 'Содержание заметки 4',
+//     lastDateEdited: Date.now(),
+//     isPinned: false
+//   },
+//   {
+//     noteId: 5,
+//     folderKey: '4',
+//     title: 'Заметка 5',
+//     content: 'Содержание заметки 5',
+//     lastDateEdited: Date.now(),
+//     isPinned: true
+//   },
+//   {
+//     noteId: 6,
+//     folderKey: '5',
+//     title: 'Заметка 6',
+//     content: 'Содержание заметки 6',
+//     lastDateEdited: Date.now(),
+//     isPinned: false
+//   },
+//   {
+//     noteId: 7,
+//     folderKey: '5',
+//     title: 'Заметка 7',
+//     content: 'Содержание заметки 7',
+//     lastDateEdited: Date.now(),
+//     isPinned: false
+//   }
+// ]
+const initialState = []
 
 const notesListSlice = createSlice({
   name: 'notes',
   initialState,
   reducers: {
     editNoteTitle(state, action) {
-      console.log('edit note title')
       const note = state.find(note => note.noteId === action.payload.id)
       note.title = action.payload.content
       note.lastDateEdited = Date.now()
     },
     editNoteContent(state, action) {
-      console.log('edit note content')
       const note = state.find(note => note.noteId === action.payload.id)
       note.content = action.payload.content
       note.lastDateEdited = Date.now()
